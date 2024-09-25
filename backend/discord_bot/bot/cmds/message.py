@@ -5,6 +5,9 @@ from discord import app_commands
 
 
 class Message(commands.Cog):
+    def __init__(self, bot) -> None:
+        self.bot= bot
+        super().__init__()
 
     # Bot附讀
     @commands.hybrid_command(description= '讓bot 說話')

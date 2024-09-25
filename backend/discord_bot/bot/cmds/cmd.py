@@ -1,21 +1,46 @@
-import tracemalloc, datetime, time, os, requests
+import tracemalloc, datetime, time, os, requests#, django
 from discord.ext import commands
+# from serializers import CreateRankChat
+
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.backend.settings')
+# django.setup()
+
+# from rest_framework.exceptions import ValidationError
 
 class Cmd(commands.Cog):
+    def __init__(self, bot) -> None:
+        self.bot= bot
+        super().__init__()
+    
+    @commands.hybrid_command(aliases=[""])
+    async def test(self, ctx: commands.Context):
+        data= {
+            'guild': ctx.guild.id,
+            'member': ctx.author.id,
+            'type': 'chat',
+            'day':[__.id for __ in _.emojis],
+            'value':[__.id for __ in _.roles]
+        } 
+        # serializer= CreateRankChat(data)
+        # if serializer.is_valid():
+        #     guild= serializer.save()
+        #     print(guild)
+        # else:
+        #     raise ValidationError(serializer.errors)
+        
     
     @commands.hybrid_command()
     async def ck_twitch_token(self, ctx:commands.Context):
         url= 'https://id.twitch.tv/oauth2/validate'
-        token= os.getenv('TWITCH_BOT_TOKEN')
+        
         headers = {
-        'Authorization': f'Bearer {token}'
+        'Authorization': f"Bearer {os.getenv('TWITCH_BOT_TOKEN')}"
         }   
         response= requests.get(url, headers= headers)
         data= response.json()
         msg= ''
         if response.status_code==200:
-            msg= 'twitch token OK'
-            print('Token', data)
+            msg= f"twitch token OK\n登入帳號：{data['login']}\n權限範圍：{', '.join(data['scopes'])}\n剩餘時間：{data['expires_in']}"
         else:
             msg= f"twitch token 失效 {data['status']}, {data['message']}"
         await ctx.send(msg)

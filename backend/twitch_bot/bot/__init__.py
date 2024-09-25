@@ -15,7 +15,7 @@ class Bot(commands.Bot) :
             token= token,
             client_id= id
         )
-        print('\nTwitch Bot - 啟動中...\n')
+        print('\n\033[0;36mTwitch Bot\033[0m - 啟動中 ...')
         
         
     def load_cog(self):
@@ -23,22 +23,23 @@ class Bot(commands.Bot) :
         for filename in os.listdir(os.path.dirname(__file__)):
             if not filename.startswith('_') and filename.endswith('.py'):
                 try:
+                    print(f'     \033[1;32m-\033[0m {filename} ... ', end='')
                     module_name = f'bot.{filename[:-3]}'
                     module = importlib.import_module(module_name)
                     module.setup(self)
-                    print(f'Twitch Bot - 載入 {filename} ... OK')
+                    print('\033[1;32mOK\033[0m')
                 except Exception as e:
-                    print(f'Twitch Bot - 載入 {filename} 失敗 : {e}')
+                    print(f'失敗 : \033[0;31m{e}\033[0m')
                     
     async def event_ready(self):
         
-        print(f'\nTwitch Bot - 已登入帳號：', self.nick)
-        print('Twitch Bot - 載入指令...')
+        print(f'   \033[1;32m-\033[0m 已登入帳號 | \033[0;32m{self.nick}\033[0m')
+        print('   \033[1;32m-\033[0m 載入檔案 ...')
         
         self.load_cog()
         
-        print(f'Twitch Bot - 載入指令: {len(self.commands)} 條')
-        print('Twitch Bot - 啟動完成\n')
+        print(f'   \033[1;32m-\033[0m 載入指令: \033[1;35m{len(self.commands)}\033[0m 條')
+        print('  \033[1;32m-\033[0;36m 啟動完成\033[0m')
     
     # 複寫原方法
     async def event_command_error(self, ctx: commands.Context, error):

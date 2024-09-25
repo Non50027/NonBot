@@ -65,8 +65,8 @@ class Event(CogCore):
             
         await asyncio.sleep(5)
         await message.channel.send(f" @{message.author.name} 生日大快樂 mokoRiboon ")
-        print(f'{datetime.now().strftime("%H:%M:%S")} - {message.channel.name} -> {message.author.display_name} : {message.content}')
-        print(f'{message.channel.name} -> 回復 {message.author.display_name} 生快')
+        print(f'\033[0;35m{datetime.now().strftime("%H:%M:%S")}\033[0m - \033[0;31m{message.channel.name}\033[0m -> \033[0;32m{message.author.display_name}\033[0m : {message.content}')
+        print(f'\033[0;35m{datetime.now().strftime("%H:%M:%S")}\033[0m - \033[0;31m{message.channel.name}\033[0m -> 回復 \033[0;32m{message.author.display_name}\033[0m 生快')
         
     # 自動回復晚安
     async def goodNight(self, message: twitchio.Message):
@@ -97,13 +97,13 @@ class Event(CogCore):
             elif message.channel.name== 'iitifox': msg+= ' iitiPpr  iitiPr  iitiZzz '
             
             await message.channel.send(msg)
-            # print(f'{datetime.now().strftime("%H:%M:%S")} - {message.channel.name} -> 回復 {msg} 晚安')
+            # print(f'\033[0;35m{datetime.now().strftime("%H:%M:%S")}\033[0m - \033[0;31m{message.channel.name}\033[0m -> 回復 {msg} 晚安')
         
         if not [_ for _ in ['大家', '各位', '農農'] if _ in message.content]: return
         if not [_ for _ in ['晚安', '晚安', 'moko114'] if _ in message.content]: return
         
         msgContent= " ".join(message.content.split("@")[-1].split(" ")[1:]) if '@' in message.content else message.content
-        # print(f'{datetime.now().strftime("%H:%M:%S")} - {message.channel.name} -> {message.author.display_name}{message.author.name} : @{len(message.content.split("@"))-1}個人 {msgContent}')
+        # print(f'\033[0;35m{datetime.now().strftime("%H:%M:%S")}\033[0m - \033[0;31m{message.channel.name}\033[0m -> \033[0;32m{message.author.display_name}\033[0m{message.author.name} : @{len(message.content.split("@"))-1}個人 {msgContent}')
         
         if not self.checkCoolDowns(message.channel.name+ '晚安', cache):
             self.goodNightMsg[message.channel.name]= '@'+message.author.name
@@ -146,21 +146,12 @@ class Event(CogCore):
                 
             await message.channel.send(msg)
             
-            # print(f'{message.channel.name} -> 回復 {message.author.display_name} 早安')
-            # print(f'{datetime.now().strftime("%H:%M:%S")} - {message.channel.name} -> 回復 {msg} 早安')
+            # print(f'\033[0;31m{message.channel.name}\033[0m -> 回復 \033[0;32m{message.author.display_name}\033[0m 早安')
+            # print(f'\033[0;35m{datetime.now().strftime("%H:%M:%S")}\033[0m - \033[0;31m{message.channel.name}\033[0m -> 回復 {msg} 早安')
         
         if not '農農' in message.content: return
-        print(0, end='\r')
         # 印出包含我的留言
-        print(f'{datetime.now().strftime("%H:%M:%S")} - {message.channel.name} -> {message.author.display_name}{message.author.name} : @{len(message.content.split("@"))-1}個人 {" ".join(message.content.split("@")[-1].split(" ")[1:])}')
-        
-        # if message.author.name== 'mmmmadrian0313':
-        #     if self.checkCoolDowns(message.channel.name+ message.author.name+ '安安', 50000): return
-        #     await asyncio.sleep(10)
-        #     print(f'{message.channel.name} -> 回復 毛貓 早安')
-        #     await message.channel.send(f'@{message.author.name} 毛貓 早安呀 moko107  mokoLove ')
-        #     # await message.channel.send(f'@{message.author.name} 毛貓 早安呀 mokoHIhi  mokoFlower ')
-        #     return
+        print(f'\033[0;35m{datetime.now().strftime("%H:%M:%S")}\033[0m - \033[0;31m{message.channel.name}\033[0m -> \033[0;32m{message.author.display_name}\033[0m{message.author.name} : @{len(message.content.split("@"))-1}個人 {" ".join(message.content.split("@")[-1].split(" ")[1:])}')
             
         # 不包含內容 跳出
         if not any(_ in message.content for _ in ['早安', '安安', '早ㄤ' , '早早', '早呀', 'mokoHi1', 'mokoHIhi', 'migiHoya', 'migiYAYA', 'mokoOLA', 'mokoCeng1', 'mokoSheep1', 'fish6An', 'fish6Hi', 'iitiFTB', 'iitiNONO', 'iiti00']): return
@@ -186,7 +177,7 @@ class Event(CogCore):
         if not self.checkCoolDowns(message.channel.name+ '歡回', 600):
             await asyncio.sleep(5)
             await message.channel.send(self.tempWelcomeMsg)
-            print(f'{datetime.now().strftime("%H:%M:%S")} - {message.channel.name} -> {message.content}')
+            print(f'\033[0;35m{datetime.now().strftime("%H:%M:%S")}\033[0m - \033[0;31m{message.channel.name}\033[0m -> {message.content}')
         
     # 一起刷表符
     async def emoji(self, message: twitchio.Message):
@@ -223,7 +214,7 @@ class Event(CogCore):
         """
         指令執行後觸發...無論指令是否失敗
         """
-        print(f"指令 {ctx.command.name} 在 {ctx.channel.name} 被 {ctx.author.name} 執行")
+        print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - 指令 {ctx.command.name} 在 {ctx.channel.name} 被 {ctx.author.name} 執行")
         
         # 強制執行垃圾回收
         gc.collect()

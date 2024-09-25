@@ -10,21 +10,24 @@ def load(bot):
     # 準備完成
     @bot.event
     async def on_ready():
-        print('Discord Bot - 頻道測試 ...')
+        print('   \033[1;32m-\033[0m 開始頻道測試 ...')
         # 頻道測試
         # all guild
         for guild in bot.guilds:
             # 權限測試
+            count= 0
             for channel in guild.channels:
+                count+= 1
+                print(f'       \033[0;31m{guild.name}\033[0m [ {count} / {len(guild.channels)} ]', end='\r')
                 perms = channel.permissions_for(guild.me)
                 if not perms.send_messages:
-                    print(f'Discord Bot - 無法在 {guild.name} 的 {channel.name} 發訊息...')
+                    print(f'\n      \033[1;32m-\033[0m 無法在 \033[0;34m{channel.name}\033[0m 發訊息...')
                 if not perms.read_message_history:
-                    print(f'Discord Bot - 無法讀取 {guild.name} 中 {channel.name} 的歷史訊息...')
+                    print(f'\n      \033[1;32m-\033[0m 無法讀取 \033[0;34m{channel.name}\033[0m 的歷史訊息...')
             
-        print('Discord Bot - 頻道測試結束')
+        print('\n   \033[1;32m-\033[0m 頻道測試結束')
         
-        print('Discord Bot - 準備完成')
+        print('  \033[1;32m-\033[0;36m 啟動完成\033[0m\n')
     
     # 指令成功執行時觸發
     @bot.event

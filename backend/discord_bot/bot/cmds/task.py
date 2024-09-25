@@ -1,14 +1,17 @@
-import discord, requests, dotenv, os, json, aiohttp
+import discord, requests, dotenv, os, json, aiohttp, urllib3
 from discord.ext import commands, tasks
+from bot.serve import checkTwitchToken
 
 dotenv.load_dotenv()
+# 忽略 InsecureRequestWarning 警告
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class Task(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.twitch= {
             'id': os.getenv('VITE_TWITCH_BOT_ID'),
-            'time': 3600
+            'time': checkTwitchToken()['expires_in'] if checkTwitchToken() else 900
         }
         self.refreshUrl= f"{os.getenv('VITE_BACKEND_URL')}/oauth/re_get_twitch_token/"
         self.bot.loop.create_task(self.start_task_init())
@@ -16,9 +19,9 @@ class Task(commands.Cog):
     async def start_task_init(self):
         await self.bot.wait_until_ready()
         self.on_live.start()
-        print('開始直播偵測')
+        print('     \033[1;32m-\033[0m 開始 直播偵測')
         self.check_twitch_token.start()
-        print('開始 Twitch Token 偵測')
+        print('     \033[1;32m-\033[0m 開始 Twitch Bot Token 偵測')
     
     @staticmethod
     async def fetch_twitch_data(url, headers):
@@ -31,17 +34,17 @@ class Task(commands.Cog):
     async def check_twitch_token(self):
         
         self.twitch['time'] -= 300  # 每次檢查後剩餘時間減少60秒（1分鐘）
-        print('twitch token 剩餘時間', self.twitch['time'])
+
         # 如果剩餘時間小於5分鐘，則刷新Token
         if self.twitch['time'] <= 300:  # 300秒 = 5分鐘
             try:
                 print("刷新 Twitch Token ...")
                 response = requests.get(self.refreshUrl, verify=False)
+                responseData= response.json()
                 if response.status_code == 200:
+                    self.twitch['time'] = responseData['expires_in']  # 更新新的有效期
+                    print(f"新的時間為", self.twitch['time'])
                     print("Twitch Token 刷新成功")
-                    # 假設API回應中有新的 expires_in 值，你可以更新它
-                    token_info = response.json()
-                    self.twitch['time'] = token_info['expires_in']  # 更新新的有效期
                 else:
                     print(f"刷新 Twitch Token 失敗: {response}")
             except Exception as e:
@@ -63,7 +66,12 @@ class Task(commands.Cog):
         for subChannels in data.values():
             subUserId= [_['id'] for _ in subChannels['twitch']]
             userId= '&user_id='.join(subUserId)
-            liveLists= await Task.fetch_twitch_data(url+userId, headers)
+            try:
+                liveLists= await Task.fetch_twitch_data(url+userId, headers)
+            except Exception as e:
+                print('on_live error ', e)
+                return
+            
             for subChannel in subChannels['twitch']:
                 
                 # 未在直播
@@ -83,14 +91,15 @@ class Task(commands.Cog):
                 embed= discord.Embed()
                 embed.title= liveData['title']
                 embed.color= 0x9700d0    #9700d0
-                embed.url= f"https://www.twitch.tv/{subChannel['name']}"
+                liveUrl= f"https://www.twitch.tv/{liveData['user_login']}"
+                embed.url= liveUrl
                 
-                img= f'https://static-cdn.jtvnw.net/previews-ttv/live_user_{subChannel["name"]}.jpg'
+                img= f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{liveData['user_login']}.jpg"
                 embed.set_image(url= img)
                     
                 embed.set_author(
-                        name= subChannel['display_name'],
-                        url= url,
+                        name= liveData['user_name'],
+                        url= liveUrl,
                         icon_url= subChannel['icon_url']
                         )
                 embed.add_field(name= '分類', value= liveData['game_name'], inline= False)
@@ -101,9 +110,8 @@ class Task(commands.Cog):
                 ch= self.bot.get_channel(subChannel['channel'])
                 await ch.send(tag, embed= embed)
                 
-                print(subChannel['display_name'], '在紫色學校開台了')
+                print(f"\033[0;32m{liveData['user_name']}\033[0m 在紫色學校開台了")
         
-        print('直播偵測系統運作中...', end='\r')
         # save json
         with open(jsonPath, 'w', encoding='utf8') as file:
             json.dump(data, file, ensure_ascii=False, indent=4)

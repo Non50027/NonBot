@@ -58,7 +58,7 @@
                 "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/1089ca27-c573-4aa8-95e2-a809d99ec987-profile_image-300x300.png",
                 "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/801f06e5-5084-46f7-bfb7-9157ff7f88d4-channel_offline_image-1920x1080.jpeg",
                 "channel": 1282342240592855071,
-                "live": "False",
+                "live": "True",
                 "role": null
             },
             {
@@ -68,7 +68,7 @@
                 "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/d788ff0a-152d-46d0-9724-8ad015378fac-profile_image-300x300.png",
                 "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/206549af-3794-4330-8a1a-e472866ca273-channel_offline_image-1920x1080.png",
                 "channel": 1280211157746974804,
-                "live": "False",
+                "live": "True",
                 "role": null
             },
             {

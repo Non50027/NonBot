@@ -56,7 +56,6 @@ def reGetTwitchToken(request):
     responseData= response.json()
     if response.status_code== 200:
         responseData= response.json()
-        print(f'twitch token 刷新成功')
         update_env_variable('TWITCH_BOT_TOKEN', responseData['access_token'])
         update_env_variable('TWITCH_BOT_REFRESH_TOKEN', responseData['refresh_token'])
         return Response(responseData, status= status.HTTP_200_OK)
