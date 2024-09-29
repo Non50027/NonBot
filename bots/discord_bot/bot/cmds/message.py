@@ -1,13 +1,9 @@
-import aiohttp
-import discord
+import aiohttp, discord
 from discord.ext import commands
 from discord import app_commands
+from bot.tool import CogCore
 
-
-class Message(commands.Cog):
-    def __init__(self, bot) -> None:
-        self.bot= bot
-        super().__init__()
+class Message(CogCore):
 
     # Bot附讀
     @commands.hybrid_command(description= '讓bot 說話')

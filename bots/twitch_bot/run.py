@@ -1,4 +1,4 @@
-import os, dotenv, asyncio
+import os, asyncio, dotenv
 from bot import Bot
 
 dotenv.load_dotenv()

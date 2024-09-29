@@ -1,9 +1,6 @@
-import os, dotenv, importlib
+import os, importlib#, dotenv
 from twitchio.ext import commands
 from functools import wraps
-
-
-
 
 
 class Bot(commands.Bot) :
@@ -11,7 +8,7 @@ class Bot(commands.Bot) :
         super().__init__(
             prefix='!',
             nick= "infinite0527",
-            initial_channels= ["infinite0527", "hennie2001", "test40228", "samoago", 'reirei_neon', 'kirali_neon', 'yuzumi_neon', 'earendelxdfp', 'kspksp', 'iitifox', 'migi_tw', 'mikiaoboshi', 'hantears'],
+            initial_channels= ["infinite0527", "hennie2001", "test40228", "samoago", 'reirei_neon', 'kirali_neon', 'yuzumi_neon', 'earendelxdfp', 'kspksp', 'iitifox', 'migi_tw', 'mikiaoboshi', 'hantears', 'hipudding1223'],
             token= token,
             client_id= id
         )
@@ -23,7 +20,7 @@ class Bot(commands.Bot) :
         for filename in os.listdir(os.path.dirname(__file__)):
             if not filename.startswith('_') and filename.endswith('.py'):
                 try:
-                    print(f'     \033[1;32m-\033[0m {filename} ... ', end='')
+                    print(f'     \033[1;32m-\033[0m {filename[:-3]} ... ', end='')
                     module_name = f'bot.{filename[:-3]}'
                     module = importlib.import_module(module_name)
                     module.setup(self)
@@ -59,39 +56,39 @@ class CogCore(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot= bot
         # load .env file
-        dotenv.load_dotenv()
+        # dotenv.load_dotenv()
         self.token= os.getenv('TWITCH_BOT_TOKEN'),
         self.id= os.getenv('VITE_TWITCH_BOT_ID')
     
     @staticmethod
-    def selectChannel(functionName):
+    def select_channel(function_name):
         '''
         限制命令頻道
         '''
         # 繼承方法原來的狀態
-        @wraps(functionName)
+        @wraps(function_name)
         async def inner(self, ctx: commands.Context, *args, **kwargs):
             
             # if ctx.channel.name in ['infinite0527', 'samoago']:
             if ctx.channel.name in ['infinite0527', 'hennie2001', 'samoago', 'mikiaoboshi']:
-                await functionName(self, ctx, *args, **kwargs)
+                await function_name(self, ctx, *args, **kwargs)
             else:
                 print(f' {ctx.author.display_name} 嘗試在 {ctx.channel.name} 使用指令')
         return inner
     
     @staticmethod
-    def connnectAPI(functionName):
+    def api_headers(function_name):
         '''
         連接API時使用的 headers settings
         並存在 self.headers
         '''
-        @wraps(functionName)
+        @wraps(function_name)
         async def inner(self, ctx: commands.Context, *args, **kwargs):
             headers = {
                 'Client-ID': self.id,
                 'Authorization': f'Bearer {self.token[0]}'
             }
             self.headers= headers
-            await functionName(self, ctx, *args, **kwargs)
+            await function_name(self, ctx, *args, **kwargs)
         
         return inner

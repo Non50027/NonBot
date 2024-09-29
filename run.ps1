@@ -7,7 +7,6 @@ switch ($args[0]) {
         # 執行 Django 的遷移並啟動後端
         python .\\backend\\manage.py makemigrations $args[1]
         python .\\backend\\manage.py migrate $args[1]
-        # python .\\backend\\manage.py runserver 0.0.0.0:8615
         Start-Process -NoNewWindow -FilePath "cmd" -ArgumentList "/c python .\\backend\\manage.py runserver 0.0.0.0:8615" 
         Start-Sleep -Seconds 3
         
@@ -18,16 +17,13 @@ switch ($args[0]) {
         Start-Sleep -Seconds 3
         
         # 啟動 twitch_bot
-        Push-Location .\backend
-        Start-Process -NoNewWindow -FilePath "cmd" -ArgumentList "/c python .\\twitch_bot\\runBot.py" 
-        Pop-Location
+        Start-Process -NoNewWindow -FilePath "cmd" -ArgumentList "/c python .\\bots\\twitch_bot\\run.py" 
         Start-Sleep -Seconds 5
 
         # 啟動 discord_bot
-        # Start-Process -NoNewWindow -FilePath "cmd" -ArgumentList "/c python .\\discord_bot\\runBot.py" 
-        python .\\backend\\discord_bot\\runBot.py
-        
-        
+        # Start-Process -NoNewWindow -FilePath "cmd" -ArgumentList "/c python .\\bots\\discord_bot\\run.py" 
+        python .\\bots\\discord_bot\\run.py
+
     }
     # 生成 freezefile.txt
     "-f" {

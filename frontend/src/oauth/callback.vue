@@ -51,7 +51,7 @@ onBeforeMount(()=>{
     }
 });
 const clickButton= ()=>{
-    const url= `${import.meta.env.VITE_BACKEND_URL}/oauth/twitch/`
+    const url= `${import.meta.env.VITE_BACKEND_DJANGO_URL}/oauth/twitch/`
     axios.post(url, {'code':code.value}
     )
 }

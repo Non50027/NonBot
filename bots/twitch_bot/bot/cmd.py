@@ -1,4 +1,4 @@
-import json, requests
+import requests
 from bot import CogCore
 from twitchio.ext import commands
 
@@ -11,8 +11,8 @@ class Cmd(CogCore):
     # 更改回復指令的回覆內容
     @commands.command()
     @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
-    @CogCore.selectChannel
-    async def setMsg(self, ctx: commands.Context, cmdName: str, message: str):
+    @CogCore.select_channel
+    async def setMsg(self, ctx: commands.Context, cmd_name: str, message: str):
         '''修改指令回覆內容'''
         self.msg = message
         await ctx.channel.send(f'指令設置成功...內容為: {self.msg}')
@@ -20,7 +20,7 @@ class Cmd(CogCore):
     # 回復指定訊息
     @commands.command()
     @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
-    @CogCore.selectChannel
+    @CogCore.select_channel
     async def n_test(self, ctx: commands.Context):
         '''回復指定訊息'''
         print(f"在{ctx.channel.name}使用指令輸出 -> {self.msg}")
@@ -29,22 +29,22 @@ class Cmd(CogCore):
     # 取得頻道基本資訊
     @commands.command(aliases= ['getChId'])
     @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
-    @CogCore.selectChannel
-    @CogCore.connnectAPI
-    async def getChannelId(self, ctx: commands.Context, channelName: str):
+    @CogCore.select_channel
+    @CogCore.api_headers
+    async def getChannel_id(self, ctx: commands.Context, channel_name: str):
         '''取得頻道基本資訊'''
-        url= f"https://api.twitch.tv/helix/users?login={channelName}"
+        url= f"https://api.twitch.tv/helix/users?login={channel_name}"
         r= requests.get(url, headers=self.headers)
         data= r.json()
         print(data)
         
     # 取得頻道開台資訊
     @commands.command(aliases= ['Live'])
-    @CogCore.selectChannel
-    @CogCore.connnectAPI
-    async def live(self, ctx: commands.Context, channelId: str):
+    @CogCore.select_channel
+    @CogCore.api_headers
+    async def live(self, ctx: commands.Context, channel_id: str):
         '''取得頻道開台資訊'''
-        url= f'https://api.twitch.tv/helix/streams?user_id={channelId}'
+        url= f'https://api.twitch.tv/helix/streams?user_id={channel_id}'
         r= requests.get(url, headers= self.headers)
         data= r.json()
         print(data['data'])

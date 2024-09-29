@@ -8,7 +8,7 @@
 import axios from 'axios'
 import { onBeforeMount } from 'vue'
 onBeforeMount(()=>{
-    axios.get(`${import.meta.env.VITE_BACKEND_URL}/oauth/get_csrf_token/`)
+    axios.get(`${import.meta.env.VITE_BACKEND_DJANGO_URL}/oauth/get_csrf_token/`)
     .then(response=>{
         localStorage.setItem('csrfToken', response.data.csrfToken);
     }).catch(error=>{

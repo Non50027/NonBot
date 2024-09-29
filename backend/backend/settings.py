@@ -2,11 +2,10 @@ import os, dotenv
 from pathlib import Path
 from django.utils.translation import gettext_lazy
 
-# 在根目錄 讀取 .env
-dotenv.load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+dotenv.load_dotenv()
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
@@ -23,7 +22,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 ALLOWED_HOSTS = [
-    'api.non.com.tw',
+    'api.db.non.com.tw',
     '127.0.0.1',
     'localhost'
 ]

@@ -1,10 +1,11 @@
+import discord
 from discord.ext import commands
+from bot.tool import CogCore
 
-def load(bot):
-    
-    # 全域例外
-    @bot.event
-    async def on_command_error(ctx, error):
+class Error(CogCore):
+
+    @commands.Cog.listener()        
+    async def on_command_error(self, ctx, error):
         
         print(error)
         
@@ -42,3 +43,6 @@ def load(bot):
         # 其他例外
         else:
             await ctx.send('我不會 இдஇ', ephemeral= True)
+
+async def setup(bot):
+    await bot.add_cog(Error(bot))
