@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from models import RankVoice, RankChat, LiveTwitch
+from .models import RankVoice, RankChat, LiveTwitch
 
 class CreateLiveTwitch(serializers.ModelSerializer):
     class Meta:
         model = LiveTwitch
-        fields = ['user_id', 'user_login', 'user_name', 'channel', 'role', 'background_url', 'icon_url', 'on_live']
+        fields = ['guild', 'user_id', 'user_login', 'user_name', 'channel', 'role', 'background_url', 'icon_url', 'on_live']
 
 class CreateRankChat(serializers.ModelSerializer):
 

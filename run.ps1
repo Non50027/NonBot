@@ -14,7 +14,7 @@ switch ($args[0]) {
         Push-Location .\frontend
         Start-Process -NoNewWindow -FilePath "cmd" -ArgumentList "/c yarn dev --host --port 5615" 
         Pop-Location
-        Start-Sleep -Seconds 3
+        Start-Sleep -Seconds 4
         
         # 啟動 twitch_bot
         Start-Process -NoNewWindow -FilePath "cmd" -ArgumentList "/c python .\\bots\\twitch_bot\\run.py" 

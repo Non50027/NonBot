@@ -14,11 +14,12 @@ class RankChat(models.Model):
     
 class LiveTwitch(models.Model):
     
+    guild= models.CharField(max_length=50, null=False)
     user_id= models.CharField(primary_key=True, max_length=50)
     user_login= models.CharField(max_length=50)
     user_name= models.CharField(max_length=50)
     channel= models.CharField(max_length=50, null=False)
     role= models.CharField(max_length=50, null=True)
-    background_url= models.URLField(null=False)
+    background_url= models.URLField(null=True)
     icon_url= models.URLField(null=False)
     on_live= models.BooleanField()

@@ -32,9 +32,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://non.com.tw",
     'https://www.non.com.tw',
 ]
-
 # Application definition
-
 MY_APP=[
     'discord_bot',
     'twitch_bot',
@@ -91,6 +89,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'OPTIONS': {
+            'timeout': 20,  # 20秒等待鎖定解除
+        }
     }
 }
 
@@ -143,3 +144,26 @@ STATICFILES_DIRS = [BASE_DIR.parent / "static"]
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,  # 必須的配置版本號
+    'disable_existing_loggers': False,  # 保持其他 logger 有效
+    'filters': {
+        'ignore_specific_requests': {
+            '()': 'backend.logging.IgnoreSpecificRequests',  # 自定義過濾器
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',  # 將日誌輸出到控制台
+        },
+    },
+    'loggers': {
+        'django.server': {  # 對 django 伺服器的日誌進行控制
+            'handlers': ['console'],
+            'level': 'INFO',  # 只記錄 INFO 級別及以上的日誌
+            'filters': ['ignore_specific_requests'],  # 套用過濾器
+        },
+    },
+}

@@ -1,1 +1,212 @@
-null
+{
+    "MassacreShowTime": {
+        "twitch": [
+            {
+                "id": "197367758",
+                "name": "hennie2001",
+                "display_name": "烟花蹦蹦蹦",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/f8d3e5a8-a0a8-43e9-929e-e9e7085dd374-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/1fa4646d-8072-4807-8bbe-df480b03ded4-channel_offline_image-1920x1080.png",
+                "channel": 1280209020778708992,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "928328219",
+                "name": "kirali_neon",
+                "display_name": "煌きらり_霓",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/262ab8bf-fa09-4a79-b1a1-e4edb4c0f8b5-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/a68a839a-1828-481e-8679-52ac9db3c031-channel_offline_image-1920x1080.png",
+                "channel": 1280210288335130634,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "928482127",
+                "name": "reirei_neon",
+                "display_name": "澪れい_霓",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/ef15308c-2d43-43f2-b2ab-1d0250af071a-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/716fa2c2-ff07-4c9a-ad17-11c964339a0f-channel_offline_image-1920x1080.jpeg",
+                "channel": 1280210577377202320,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "929140741",
+                "name": "yuzumi_neon",
+                "display_name": "橙ゆずみ_霓",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/061ce9d9-66fe-4f4f-a291-8a7fd303dfa6-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/9d168baf-969b-4895-bc4e-8e75cfb8c3f0-channel_offline_image-1920x1080.png",
+                "channel": 1280209936801988629,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "864364302",
+                "name": "kannazukilubee",
+                "display_name": "神無月鹿比",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/032b62a6-d677-4bbe-9b53-203ea7de1a5e-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/096b94a0-c4a2-4ae3-8573-d112adef979a-channel_offline_image-1920x1080.jpeg",
+                "channel": 1212652524163694602,
+                "live": "True",
+                "role": null
+            },
+            {
+                "id": "456798977",
+                "name": "kspksp",
+                "display_name": "KSPKSP",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/1089ca27-c573-4aa8-95e2-a809d99ec987-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/801f06e5-5084-46f7-bfb7-9157ff7f88d4-channel_offline_image-1920x1080.jpeg",
+                "channel": 1282342240592855071,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "28651510",
+                "name": "migi_tw",
+                "display_name": "米姬",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/d788ff0a-152d-46d0-9724-8ad015378fac-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/206549af-3794-4330-8a1a-e472866ca273-channel_offline_image-1920x1080.png",
+                "channel": 1280211157746974804,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "846212652",
+                "name": "earendelxdfp",
+                "display_name": "厄倫蒂兒",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/2d9b9335-f801-48c4-97ba-ba2b5106b80b-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/b62c7dca-4b58-48f7-b5cb-47e6fdbc4076-channel_offline_image-1920x1080.jpeg",
+                "channel": 1280211574983757936,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "868775102",
+                "name": "nemesisxdfp",
+                "display_name": "涅默",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/22fd57dd-65e3-4513-aeaf-da0aed90c6a0-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/e3708f51-087c-495f-9a05-073fe6891b40-channel_offline_image-1920x1080.png",
+                "channel": 1280211870359355403,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "1017225456",
+                "name": "samoago",
+                "display_name": "SamoAgo",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/c360e765-907b-4574-9732-50a41b43fb86-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/969382a1-aebe-4179-8efe-cc9ac11e6fb8-channel_offline_image-1920x1080.png",
+                "channel": 1289978803262718024,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "807481729",
+                "name": "seki_meridian",
+                "display_name": "汐セキ",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/2a3ff8bc-2dbe-4b12-8d37-8e2d6a0a4f0b-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/383fe098-5f50-4634-a470-c6981e4fbd14-channel_offline_image-1920x1080.png",
+                "channel": 1282343306977874021,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "673082016",
+                "name": "iitifox",
+                "display_name": "稻乙緹",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/615efcd0-a69c-44a5-8447-d6c55dc4e56d-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/7016a778-555b-49c6-bd74-ab68d05e13fd-channel_offline_image-1920x1080.png",
+                "channel": 1289981396093370444,
+                "live": "True",
+                "role": null
+            },
+            {
+                "id": "82769712",
+                "name": "test40228",
+                "display_name": "劉小魚",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/a81af2cc-d581-49e2-9c24-d28b9ff1d276-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/6dff03f6-ab59-4f36-b0cb-31c4a889cdc5-channel_offline_image-1920x1080.png",
+                "channel": 1289980479616843869,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "1001266615",
+                "name": "moondogs_celestial",
+                "display_name": "幻月_",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/723e60a4-3319-49bd-b13d-39e0d952ce04-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/5de7d31a-17d4-44f7-913b-da3881f639c1-channel_offline_image-1920x1080.png",
+                "channel": 1280212260912103435,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "786574029",
+                "name": "mikiaoboshi",
+                "display_name": "鴿子姐姐",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/71b42902-10bf-4c19-b1f2-fcb8c3755548-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/949d2e94-00b0-4832-a1ae-595775b1dad4-channel_offline_image-1920x1080.png",
+                "channel": 1291147428535472219,
+                "live": "False",
+                "role": null
+            }
+        ],
+        "youtube": [
+            {
+                "id": "UCZTw6BZCzfjCarjJMRpU0Wg",
+                "name": "@煌kirali",
+                "display_name": "煌Kirali Channel",
+                "description": "嗚呼，是我啦煌Kirali💥\n子午計畫所屬【霓NEO(n)】\n\n商業洽談 聯絡洽詢：meridianprojectSD@gmail.com \n連動合作、其他 聯絡洽詢： meridian@meridianproject.tw\n所屬子午計畫MeridianProject團隊，且無在經營B站 \n\n💥如果想寄送禮物，請寄到工作室並註明給Kirali💥 \n地址 ▷【桃園市大園區三民路二段831號1樓-子午計畫有限公司】　 \n⚠️⚠️食物、生物與含電池的物品是NG的喔⚠️⚠️ \n",
+                "icon_url": "https://yt3.ggpht.com/E81Htka2x9NB2rKlRp3Iju98nNIYvCn8fLittbUFryYEsAgO6Ze71RScm_nd-Lco8TqMquRj8XI=s800-c-k-c0x00ffffff-no-rj",
+                "subCount": "54300",
+                "live": "False",
+                "channel": 1280210288335130634
+            },
+            {
+                "id": "UCbTv4OeHE9p1akLhKfgW8WQ",
+                "name": "@澪rei",
+                "display_name": "澪Rei Channel",
+                "description": "我是子午計畫【霓NEO(n)】的小狸貓，想和你開開心心的過每一天💙\n\n商業洽談 聯絡洽詢：meridianprojectSD@gmail.com \n連動合作、其他 聯絡洽詢： meridian@meridianproject.tw\n子午計畫 MeridianProject 團隊所屬，且無經營B站 \n\n💧🍃如果想寄送禮物，請寄到工作室並註明給Rei🍃💧\n地址 ▷【桃園市大園區三民路二段831號1樓 - 子午計畫有限公司】　 \n⚠️⚠️食物、生物與含電池的物品是NG的喔⚠️⚠️ \n",
+                "icon_url": "https://yt3.ggpht.com/KrHyWHGyfdx0o93GbkBWlVJgcopvgo1NGYZAbcu7ctRlNO8PJsQIkpa0VTLX9fJ5_CKcmE_0_KU=s800-c-k-c0x00ffffff-no-rj",
+                "subCount": "59600",
+                "live": "True",
+                "channel": 1280210577377202320
+            },
+            {
+                "id": "UCxI5FyblWfEVBJDbSwRPzyw",
+                "name": "@橙yuzumi",
+                "display_name": "橙Yuzumi Channel",
+                "description": "やーほ\n🍊我是霓NEO(n)的橙Yuzumi，不是松鼠是鼯鼠。\n直播內容會以遊戲為主，低機率出現歌回( ･ᴗ･ )♡\n\n商業洽談 聯絡洽詢：meridianprojectSD@gmail.com \n連動合作、其他 聯絡洽詢： meridian@meridianproject.tw\n所屬子午計畫MeridianProject團隊，且無在經營B站 \n\n🧡如果想寄送禮物，請寄到工作室並註明給Yuzumi🧡\n地址 ▷【桃園市大園區三民路二段831號1樓 子午計畫有限公司】　 \n⚠️⚠️食物、生物與含電池的物品是NG的喔⚠️⚠️ \n\n【電腦設置】\n\n處理器：Intel® Core™ i5-12400F\n主機板：MSI PRO B660M-A WIFI DDR4\n記憶體：Kingston Fury Beast DDR4-3200 16G*2\n顯示卡：EVGA GeForce RTX 3080 XC3 10G\n\n耳機：HS80 RGB WIRELESS\n鍵盤：K70 MAX\n滑鼠：M75 WIRELESS Lightweight \nDPI：1000\nApex設定：1.1 、ads 1.0、FOV 110\n",
+                "icon_url": "https://yt3.ggpht.com/ji4wtdiB7Hwrz0GOP4rPdRmT5fFz4zK4oY7p2Mlxhfx_UfW6SywiAk9K8HmaI4C_jB9d7WkDBg=s800-c-k-c0x00ffffff-no-rj",
+                "subCount": "48100",
+                "live": "False",
+                "channel": 1280209936801988629
+            }
+        ]
+    },
+    "貓窩LA": {
+        "twitch": [
+            {
+                "id": "727697238",
+                "name": "mitsumoto_loli",
+                "display_name": "燎漓",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/bdcf35c0-d6ba-4012-837e-876757887bc5-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/3cec727c-6021-4dd9-b8f1-e8002b6ab3a6-channel_offline_image-1920x1080.png",
+                "channel": 1087071159482318878,
+                "live": "False",
+                "role": null
+            },
+            {
+                "id": "104238463",
+                "name": "crash_cat_da",
+                "display_name": "崩炸貓",
+                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/ca7cec23-1e1d-4888-9033-ea2d72f75ada-profile_image-300x300.png",
+                "background_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/934a7fc4-cc65-4509-91ce-924b83d7fb1c-channel_offline_image-1920x1080.jpeg",
+                "channel": 1087071159482318878,
+                "live": "False",
+                "role": null
+            }
+        ]
+    }
+}

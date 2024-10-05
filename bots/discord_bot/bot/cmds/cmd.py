@@ -1,32 +1,14 @@
-import tracemalloc, os, requests, discord, time
+import tracemalloc, os, requests, discord, time, asyncio
 from discord.ext import commands
-from bot.tool import CogCore
+from bot.tool import CogCore, MyDecorators
 
 class Cmd(CogCore):
     
     @commands.hybrid_command()
+    @MyDecorators.readJson('subLive')
     async def test(self, ctx: commands.Context):
-        cog= self.bot.get_cog('Live')
-        ch= self.bot.get_channel(656791892440121354)
-        msg= await ch.fetch_message(1289805561952600126)
-        ctx= await self.bot.get_context(msg)
-        cmd= self.bot.get_command('meg')
-        print(cmd)
-        await cmd(ctx)
-        # await ctx.send(os.getenv('TWITCH_BOT_TOKEN'), ephemeral= True)
+        pass
         
-    @commands.hybrid_command()
-    async def ck_twitch_token(self, ctx:commands.Context):
-        
-        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/check_twitch_token/", verify=False)
-        response_data= response.json()
-        
-        if response.status_code==200:
-            msg= f"twitch token OK\n登入帳號：{response_data['login']}\n權限範圍：{', '.join(response_data['scopes'])}\n剩餘時間：{time.strftime('%H: %M: %S', time.gmtime((response_data['expires_in'])))}"
-        else:
-            msg= f"twitch token 失效 {response_data['status']}, {response_data['message']}"
-        await ctx.send(msg, ephemeral= True)
-    
     # return bot ping
     @commands.hybrid_command(description= '可以查看延遲', aliases= ['延遲'])
     @commands.is_owner()

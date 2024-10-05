@@ -39,18 +39,17 @@ class Event(CogCore):
                 if count== len(guild.channels):
                     print()
         print('   \033[1;32m-\033[0m 頻道測試結束')
-        
         print('  \033[1;32m-\033[0;36m 啟動完成\033[0m')
     
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
-        print(f'{member.display_name}偷偷D滑了進來!')
-        await self.bot.get_channel(1246368178762809475).send(f'歡迎{member.mention}的降落~')
+    # @commands.Cog.listener()
+    # async def on_member_join(self, member):
+    #     print(f'{member.display_name}偷偷D滑了進來!')
+    #     await self.bot.get_channel(1246368178762809475).send(f'歡迎{member.mention}的降落~')
 
-    @commands.Cog.listener()
-    async def on_member_remove(self, member):
-        print(f'{member.display_name}偷偷D離大家遠去了!')
-        await self.bot.get_channel(1246368590316175440).send(f'{member.display_name}偷偷D離大家遠去了...')    
+    # @commands.Cog.listener()
+    # async def on_member_remove(self, member):
+    #     print(f'{member.display_name}偷偷D離大家遠去了!')
+    #     await self.bot.get_channel(1246368590316175440).send(f'{member.display_name}偷偷D離大家遠去了...')
     
 async def setup(bot):
     await bot.add_cog(Event(bot))

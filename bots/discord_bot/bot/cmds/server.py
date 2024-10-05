@@ -11,6 +11,7 @@ class Api(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         """當 bot 準備好時，設置全域變數"""
+        print('server is ready')
         pass
 
     @commands.hybrid_command()

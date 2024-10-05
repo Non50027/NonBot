@@ -1,19 +1,34 @@
-import os, importlib#, dotenv
+import os, importlib, gc, requests, dotenv, time
 from twitchio.ext import commands
-from functools import wraps
+from datetime import datetime
 
 
 class Bot(commands.Bot) :
-    def __init__(self, token: str, id: str):
+    def __init__(self, token: str):
         super().__init__(
             prefix='!',
-            nick= "infinite0527",
-            initial_channels= ["infinite0527", "hennie2001", "test40228", "samoago", 'reirei_neon', 'kirali_neon', 'yuzumi_neon', 'earendelxdfp', 'kspksp', 'iitifox', 'migi_tw', 'mikiaoboshi', 'hantears', 'hipudding1223'],
+            initial_channels= [
+                "infinite0527",
+                "hennie2001",
+                "test40228",
+                "samoago",
+                'reirei_neon',
+                'kirali_neon',
+                'yuzumi_neon',
+                'hibiki_meridianproject',
+                'yoruno_moonlit',
+                'earendelxdfp',
+                'moondogs_celestial',
+                'kspksp',
+                'iitifox',
+                'migi_tw',
+                'mikiaoboshi',
+                'hantears',
+                'hipudding1223'
+                ],
             token= token,
-            client_id= id
         )
         print('\n\033[0;36mTwitch Bot\033[0m - 啟動中 ...')
-        
         
     def load_cog(self):
         # 載入所有 cmds 底下的檔案
@@ -37,13 +52,25 @@ class Bot(commands.Bot) :
         
         print(f'   \033[1;32m-\033[0m 載入指令: \033[1;35m{len(self.commands)}\033[0m 條')
         print('  \033[1;32m-\033[0;36m 啟動完成\033[0m')
+
+
+    # 指令執行後觸發...無論指令是否失敗
+    async def global_after_invoke(self, ctx: commands.Context):
+        """
+        指令執行後觸發...無論指令是否失敗
+        """
+        print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - 指令 {ctx.command.name} 在 {ctx.channel.name} 被 {ctx.author.name} 執行")
+        
+        # 強制執行垃圾回收
+        gc.collect()
+        
     
     # 複寫原方法
     async def event_command_error(self, ctx: commands.Context, error):
         
         # 沒有指令
         if isinstance(error, commands.errors.CommandNotFound):
-            # print(f"No command: {error}")
+            # print(f"No --- command: {error}")
             pass
         
         # CD 中
@@ -51,44 +78,25 @@ class Bot(commands.Bot) :
             print(f'指令 CD 中 ... 剩下 {error.retry_after:.2f} 秒')
         else:
             print(f'指令執行發生錯誤：{error}')
-
-class CogCore(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot= bot
-        # load .env file
-        # dotenv.load_dotenv()
-        self.token= os.getenv('TWITCH_BOT_TOKEN'),
-        self.id= os.getenv('VITE_TWITCH_BOT_ID')
     
-    @staticmethod
-    def select_channel(function_name):
-        '''
-        限制命令頻道
-        '''
-        # 繼承方法原來的狀態
-        @wraps(function_name)
-        async def inner(self, ctx: commands.Context, *args, **kwargs):
-            
-            # if ctx.channel.name in ['infinite0527', 'samoago']:
-            if ctx.channel.name in ['infinite0527', 'hennie2001', 'samoago', 'mikiaoboshi']:
-                await function_name(self, ctx, *args, **kwargs)
-            else:
-                print(f' {ctx.author.display_name} 嘗試在 {ctx.channel.name} 使用指令')
-        return inner
     
-    @staticmethod
-    def api_headers(function_name):
-        '''
-        連接API時使用的 headers settings
-        並存在 self.headers
-        '''
-        @wraps(function_name)
-        async def inner(self, ctx: commands.Context, *args, **kwargs):
-            headers = {
-                'Client-ID': self.id,
-                'Authorization': f'Bearer {self.token[0]}'
-            }
-            self.headers= headers
-            await function_name(self, ctx, *args, **kwargs)
+    async def event_reconnect(self):
+        print(f"重新連接 ... | {self.nick}")
         
-        return inner
+        
+    async def event_token_expired(self):
+        print("Twitch token 已過期，正在嘗試更新...(；´д｀)")
+        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/re_get_twitch_token/", verify=False)
+        response_data= response.json()
+        
+        if response.status_code==200:
+            self._ws.token= response_data['access_token']
+            del os.environ['TWITCH_BOT_TOKEN']
+            del os.environ['TWITCH_BOT_REFRESH_TOKEN']
+            dotenv.load_dotenv()
+            print(f"Twitch Token 刷新成功 ヾ(＾∇＾) ... 新的時間為 {time.strftime('%H: %M: %S', time.gmtime(response_data['expires_in']))} sec")
+            return response_data['access_token']
+        else:
+            print(f"刷新 Twitch Token 失敗 (T_T) : {response}")
+            return None
+        

@@ -30,6 +30,7 @@ class MyDecorators():
                 self.json_data= json_data
                 result = await function_name(self, *args, **kwargs)
                 
+                if self.json_data is None: return
                 # save json
                 with open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), f'data\\{json_filename}.json'), 'w', encoding='utf8') as file:
                     json.dump(result, file, ensure_ascii=False, indent=4)
