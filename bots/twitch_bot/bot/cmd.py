@@ -1,4 +1,4 @@
-import requests
+import requests, random
 from bot.tool import CogCore, MyDecorators
 from twitchio.ext import commands
 
@@ -22,7 +22,11 @@ class Cmd(CogCore):
     async def n_test(self, ctx: commands.Context):
         '''回復指定訊息'''
         print(f"在{ctx.channel.name}使用指令輸出 -> {self.msg}")
-        await ctx.channel.send(self.msg)
+        _= ['Love', 'Jump', 'Horn', 'Bell', 'Hi', 'Lick', 'Jump', 'Lovely', 'Move', 'Press', 'Wink']
+        _= random.choices(_, k= random.randint(1, 2))
+        _= _ if len(_)>1 else _*2
+        msg= f" kspksp{'  kspksp'.join(_)} "
+        await ctx.channel.send(msg)
         
     # 取得頻道基本資訊
     @commands.command(aliases= ['getChId'])

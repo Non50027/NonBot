@@ -21,7 +21,6 @@ switch ($args[0]) {
         Start-Sleep -Seconds 5
 
         # 啟動 discord_bot
-        # Start-Process -NoNewWindow -FilePath "cmd" -ArgumentList "/c python .\\bots\\discord_bot\\run.py" 
         python .\\bots\\discord_bot\\run.py
 
     }

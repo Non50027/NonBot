@@ -27,10 +27,16 @@ class TwitchTask(CogCore):
     async def on_ready(self):
         self.bot.loop.create_task(self.start_task_init())
     
+    def restart_or_start(self, func):
+        if func.is_running():
+            func.restart()
+        else:
+            func.start()
+    
     async def start_task_init(self):
-        self.get_sub_user_id.start()
-        self.on_live.start()
-        self.loop_check_twitch_token.start()
+        self.restart_or_start(self.get_sub_user_id)
+        self.restart_or_start(self.on_live)
+        self.restart_or_start(self.loop_check_twitch_token)
     
     @tasks.loop(hours=1)
     async def get_sub_user_id(self):
@@ -69,7 +75,7 @@ class TwitchTask(CogCore):
                     del os.environ['TWITCH_BOT_REFRESH_TOKEN']
                     dotenv.load_dotenv()
                     self.twitch['time'] = response_data['expires_in']  # 更新新的有效期
-                    print(f"Twitch Token 刷新成功 ... 新的時間為 {time.strftime('%H: %M: %S', time.gmtime(self.twitch['time']))} sec")
+                    print(f"Twitch Token 刷新成功 ... 有效期限至: {time.strftime('%H: %M: %S', time.localtime( time.time()+ self.twitch['time']))}")
                 else:
                     print(f"刷新 Twitch Token 失敗: {response}")
             except Exception as e:
@@ -90,7 +96,7 @@ class TwitchTask(CogCore):
     async def on_live(self):
         '''偵測直播是否開始'''
         headers = {
-            'Authorization': f"Bearer {self.twitch['token']}",
+            'Authorization': f"Bearer {os.getenv('TWITCH_BOT_TOKEN')}",
             'Client-Id': self.twitch['id'],
         }
         url= f'https://api.twitch.tv/helix/streams?user_id='+ self.user_id

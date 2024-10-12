@@ -19,7 +19,7 @@ class TwitchCmd(CogCore):
         response_data= response.json()
         
         if response.status_code==200:
-            msg= f"twitch token OK\n登入帳號：{response_data['login']}\n權限範圍：{', '.join(response_data['scopes'])}\n剩餘時間：{time.strftime('%H: %M: %S', time.gmtime((response_data['expires_in'])))}"
+            msg= f"twitch token OK\n登入帳號：{response_data['login']}\n權限範圍：{', '.join(response_data['scopes'])}\n有效期限至：{time.strftime('%H: %M: %S', time.localtime(time.time()+ response_data['expires_in']))}"
         else:
             msg= f"twitch token 失效 {response_data['status']}, {response_data['message']}"
         await ctx.send(msg, ephemeral= True)
@@ -105,10 +105,8 @@ class TwitchCmd(CogCore):
         }
         try:
             response = requests.post(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/sub/",data= new_data, verify=False)
-            
             response_data= response.json()
-            
-            print(response_data)
+            await ctx.send(f"成功將 {response_data['data']['user_name']} 直播通知加入 {self.bot.get_channel(int(channel_id)).mention} 頻道")
         except Exception as e:
             print('requests error', e)
     
