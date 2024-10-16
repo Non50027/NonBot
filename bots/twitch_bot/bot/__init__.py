@@ -10,7 +10,6 @@ class Bot(commands.Bot) :
             initial_channels= [
                 "infinite0527",
                 "hennie2001",
-                "qttsix",
                 "test40228",
                 "samoago",
                 'reirei_neon',
@@ -20,14 +19,12 @@ class Bot(commands.Bot) :
                 'yoruno_moonlit',
                 'earendelxdfp',
                 'moondogs_celestial',
-                'xxhacucoxx_celestial',
                 'kspksp',
                 'iitifox',
                 'migi_tw',
                 'mikiaoboshi',
                 'hantears',
-                'hipudding1223',
-                '7a7a_o',
+                'hipudding1223'
                 ],
             token= token,
         )
@@ -84,7 +81,6 @@ class Bot(commands.Bot) :
     
     
     async def event_reconnect(self):
-        self._ws.token= os.getenv('TWITCH_BOT_TOKEN')
         print(f"重新連接 ... | {self.nick}")
         
         
@@ -94,6 +90,7 @@ class Bot(commands.Bot) :
         response_data= response.json()
         
         if response.status_code==200:
+            self._ws.token= response_data['access_token']
             del os.environ['TWITCH_BOT_TOKEN']
             del os.environ['TWITCH_BOT_REFRESH_TOKEN']
             dotenv.load_dotenv()

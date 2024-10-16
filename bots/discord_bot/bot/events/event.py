@@ -1,7 +1,6 @@
 import discord, gc
 from discord.ext import commands
 from bot.tool import CogCore
-from server import set_discord_bot
 
 
 class Event(CogCore):
@@ -23,7 +22,6 @@ class Event(CogCore):
     # 準備完成
     @commands.Cog.listener()
     async def on_ready(self):
-        set_discord_bot(self.bot)
         print('   \033[1;32m-\033[0m 開始頻道測試 ...')
         # 頻道測試
         # all guild

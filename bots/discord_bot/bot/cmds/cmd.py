@@ -5,8 +5,9 @@ from bot.tool import CogCore, MyDecorators
 class Cmd(CogCore):
     
     @commands.hybrid_command()
+    @MyDecorators.readJson('subLive')
     async def test(self, ctx: commands.Context):
-        return self.bot.guilds  
+        pass
         
     # return bot ping
     @commands.hybrid_command(description= '可以查看延遲', aliases= ['延遲'])
