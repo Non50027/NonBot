@@ -1,12 +1,12 @@
 import requests
-from bot.tool import CogCore, MyDecorators
+from twitch_bot.tool import CogCore, MyDecorators
 from twitchio.ext import commands
 
 
 class Cmd(CogCore):
     def __init__(self, *args, **kwargs):
         super().__init__( *args, **kwargs)
-        self.msg= ''
+        self.msg= 'Craft to Exile 2'
     
     # 更改回復指令的回覆內容
     @commands.command()
@@ -19,7 +19,7 @@ class Cmd(CogCore):
     # 回復指定訊息
     @commands.command()
     @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
-    async def n_test(self, ctx: commands.Context):
+    async def mc_mod(self, ctx: commands.Context):
         '''回復指定訊息'''
         print(f"在{ctx.channel.name}使用指令輸出 -> {self.msg}")
         await ctx.channel.send(self.msg)

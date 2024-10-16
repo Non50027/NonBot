@@ -1,15 +1,17 @@
 import os, importlib, gc, requests, dotenv, time
-from twitchio.ext import commands
+from twitchio.ext import commands as twitch_commands
+from discord.ext import commands as discord_commands
 from datetime import datetime
 
 
-class Bot(commands.Bot) :
-    def __init__(self, token: str):
+class Bot(twitch_commands.Bot) :
+    def __init__(self, token: str, discord_bot: discord_commands.Bot= None):
         super().__init__(
             prefix='!',
             initial_channels= [
                 "infinite0527",
                 "hennie2001",
+                "qttsix",
                 "test40228",
                 "samoago",
                 'reirei_neon',
@@ -19,24 +21,27 @@ class Bot(commands.Bot) :
                 'yoruno_moonlit',
                 'earendelxdfp',
                 'moondogs_celestial',
+                'xxhacucoxx_celestial',
                 'kspksp',
                 'iitifox',
                 'migi_tw',
                 'mikiaoboshi',
                 'hantears',
-                'hipudding1223'
+                'hipudding1223',
+                '7a7a_o',
                 ],
             token= token,
         )
+        self.discord= discord_bot
         print('\n\033[0;36mTwitch Bot\033[0m - 啟動中 ...')
         
     def load_cog(self):
-        # 載入所有 cmds 底下的檔案
+        # 載入所有 cmd 底下的檔案
         for filename in os.listdir(os.path.dirname(__file__)):
             if not filename.startswith('_') and filename.endswith('.py'):
                 try:
                     print(f'     \033[1;32m-\033[0m {filename[:-3]} ... ', end='')
-                    module_name = f'bot.{filename[:-3]}'
+                    module_name = f'twitch_bot.{filename[:-3]}'
                     module = importlib.import_module(module_name)
                     module.setup(self)
                     print('\033[1;32mOK\033[0m')
@@ -55,7 +60,7 @@ class Bot(commands.Bot) :
 
 
     # 指令執行後觸發...無論指令是否失敗
-    async def global_after_invoke(self, ctx: commands.Context):
+    async def global_after_invoke(self, ctx: twitch_commands.Context):
         """
         指令執行後觸發...無論指令是否失敗
         """
@@ -66,21 +71,22 @@ class Bot(commands.Bot) :
         
     
     # 複寫原方法
-    async def event_command_error(self, ctx: commands.Context, error):
+    async def event_command_error(self, ctx: twitch_commands.Context, error):
         
         # 沒有指令
-        if isinstance(error, commands.errors.CommandNotFound):
+        if isinstance(error, twitch_commands.errors.CommandNotFound):
             # print(f"No --- command: {error}")
             pass
         
         # CD 中
-        elif isinstance(error, commands.CommandOnCooldown):
+        elif isinstance(error, twitch_commands.CommandOnCooldown):
             print(f'指令 CD 中 ... 剩下 {error.retry_after:.2f} 秒')
         else:
             print(f'指令執行發生錯誤：{error}')
     
     
     async def event_reconnect(self):
+        self._ws.token= os.getenv('TWITCH_BOT_TOKEN')
         print(f"重新連接 ... | {self.nick}")
         
         
@@ -90,7 +96,6 @@ class Bot(commands.Bot) :
         response_data= response.json()
         
         if response.status_code==200:
-            self._ws.token= response_data['access_token']
             del os.environ['TWITCH_BOT_TOKEN']
             del os.environ['TWITCH_BOT_REFRESH_TOKEN']
             dotenv.load_dotenv()

@@ -1,4 +1,4 @@
-from bot.tool import CogCore
+from twitch_bot.tool import CogCore
 
 
 class Event(CogCore):

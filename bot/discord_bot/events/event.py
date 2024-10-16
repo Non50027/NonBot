@@ -1,6 +1,8 @@
-import discord, gc
+from datetime import datetime
+import gc, os, asyncio
 from discord.ext import commands
-from bot.tool import CogCore
+from discord_bot.tool import CogCore
+from twitch_bot import Bot as TwitchBot
 
 
 class Event(CogCore):
@@ -40,7 +42,26 @@ class Event(CogCore):
                     print()
         print('   \033[1;32m-\033[0m 頻道測試結束')
         print('  \033[1;32m-\033[0;36m 啟動完成\033[0m')
+        
+        if self.bot.twitch is None:
+            await asyncio.sleep(5)
+            self.bot.twitch= TwitchBot(
+                token= os.getenv('TWITCH_BOT_TOKEN'),
+                discord_bot= self.bot
+            )
+            self.bot.loop.create_task(self.bot.twitch.start())
+        
+    @commands.Cog.listener()
+    async def on_disconnect(self):
+        if self.bot.twitch:
+            print('twitch login |', self.bot.twtich.nick)
+        print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')} \033[0m失去連線 ...")
+        self.bot.twitch= None
     
+    @commands.Cog.listener()
+    async def on_resumed(self):
+        print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')} \033[0m重新連線")
+        
     # @commands.Cog.listener()
     # async def on_member_join(self, member):
     #     print(f'{member.display_name}偷偷D滑了進來!')

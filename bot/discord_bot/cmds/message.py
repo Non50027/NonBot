@@ -1,7 +1,7 @@
 import aiohttp, discord
 from discord.ext import commands
 from discord import app_commands
-from bot.tool import CogCore
+from discord_bot.tool import CogCore
 
 class Message(CogCore):
 

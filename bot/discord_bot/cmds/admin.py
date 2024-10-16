@@ -1,5 +1,5 @@
 from discord.ext import commands
-from bot.tool import SelectFileView, CogCore
+from discord_bot.tool import SelectFileView, CogCore
 
 class Admin(CogCore):
     
