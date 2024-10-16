@@ -32,7 +32,7 @@ class Bot(twitch_commands.Bot) :
                 ],
             token= token,
         )
-        self.discord= discord_bot
+        self.discord: discord_commands.Bot= discord_bot
         print('\n\033[0;36mTwitch Bot\033[0m - 啟動中 ...')
         
     def load_cog(self):

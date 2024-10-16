@@ -150,5 +150,6 @@ class TwitchTask(CogCore):
         '''task 結束後執行'''
         print('     \033[1;32m-\033[0m 結束 直播偵測')
 
+    
 async def setup(bot):
     await bot.add_cog(TwitchTask(bot))
