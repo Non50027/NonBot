@@ -91,14 +91,19 @@ class Bot(twitch_commands.Bot) :
         
         
     async def event_token_expired(self):
+        
         print("Twitch token 已過期，正在嘗試更新...(；´д｀)")
-        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/re_get_twitch_token/", verify=False)
+        response = requests.get(
+                f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/re_get_twitch_token/", 
+                verify= False
+            )
         response_data= response.json()
         
         if response.status_code==200:
             del os.environ['TWITCH_BOT_TOKEN']
             del os.environ['TWITCH_BOT_REFRESH_TOKEN']
             dotenv.load_dotenv()
+            
             print(f"Twitch Token 刷新成功 ヾ(＾∇＾) ... 新的時間為 {time.strftime('%H: %M: %S', time.gmtime(response_data['expires_in']))} sec")
             return response_data['access_token']
         else:

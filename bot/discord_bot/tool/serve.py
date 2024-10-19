@@ -1,4 +1,4 @@
-import os, aiohttp
+import os, aiohttp, requests, dotenv
     
 async def fetch_twitch_data(url, headers):
     async with aiohttp.ClientSession() as session:

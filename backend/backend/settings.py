@@ -22,7 +22,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 ALLOWED_HOSTS = [
-    'api.db.non.com.tw',
+    'db.non.com.tw',
     '127.0.0.1',
     'localhost'
 ]

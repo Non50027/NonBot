@@ -11,11 +11,11 @@ class Message(CogCore):
         self.temp_emoji= {}
         self.hi_msg= {}
         self.goodnight_msg= {}
-        self.test_response_message.start()
+        self.loop_task_response_message.start()
         
     
     @tasks.loop(minutes= 1)
-    async def test_response_message(self):
+    async def loop_task_response_message(self):
         await asyncio.sleep(5)
         
         def filter_channel(ch_name, hello: bool)-> str| None:
@@ -214,7 +214,7 @@ class Message(CogCore):
             msg= f" {self.hi_msg[key]} {msg}"
             
             msg+= filter_channel(key, True)
-            ch= self.bot.get_channel(key)
+            ch= self.bot.get_channel(key)            
             await ch.send(msg)
         self.hi_msg= {}
         
@@ -227,13 +227,13 @@ class Message(CogCore):
             await ch.send(msg)
         self.goodnight_msg= {}
         
-    @test_response_message.before_loop
-    async def test_response_message_is_ready(self):
-        print('自動回覆開始')
+    @loop_task_response_message.before_loop
+    async def loop_task_response_message_is_ready(self):
+        print('     \033[1;32m-\033[0m 開始 Twitch chat hello 自動回覆')
         
-    @test_response_message.after_loop
-    async def test_response_message_is_close(self):
-        print('自動回覆結束')
+    @loop_task_response_message.after_loop
+    async def loop_task_response_message_is_close(self):
+        print('     \033[1;32m-\033[0m 結束 Twitch chat hello 自動回覆')
     
     # 確認 CD
     def check_cooldowns(self, user_name: str, cd: int) -> bool:
@@ -269,32 +269,42 @@ class Message(CogCore):
         
         # 排除自己
         if message.author.name == self.bot.nick: return
-        
-        await self.message_response(message)
-        await self.welcome(message)
-        await self.emoji(message)
+        try:
+            await self.message_response(message)
+            await self.welcome(message)
+            await self.emoji(message)
+        except Exception as e:
+            print('auto message error', e)
     
     async def message_response(self, message: twitchio.Message):
         cache= 27
-            
-        if not [_ for _ in ['大家', '各位', '農農'] if _ in message.content]: return
+        
+        if not [_ for _ in ['大家', '各位', '農農', 'infinite0527'] if _ in message.content]: return
         
         if '農農' in message.content:
             # 印出包含我的留言
-            _= f'@{len(message.content.split("@"))-1}個人 {" ".join(message.content.split("@")[-1].split(" ")[1:])}' if len(message.content.split('@'))>2 else message.content
+            _= f'@{len(message.content.split("@"))-1}個人 {" ".join(message.content.split("@")[-1].split(" ")[1:])}' if len(message.content.split('@'))>2 else ' '.join(message.content.split(' ')[1:])
             print(f'\033[0;35m{datetime.now().strftime("%H:%M:%S")}\033[0m - \033[0;31m{message.channel.name}\033[0m -> \033[0;32m{message.author.display_name}\033[0m{message.author.name} : {_}')
+            non= self.bot.discord.get_user(482720097715093514)
+            try:
+                ch_owner= await message.channel.user()
+                await non.send(f'{ch_owner.display_name}-> {message.author.display_name}: {_}')
+            except Exception as e:
+                print('dc_send error', e)
         
+        if message.author.name== 'Nightbot': return
+        if message.author.name== 'StreamElements': return
         # 分類早安、晚安
         if any(_ in message.content.lower() for _ in ['晚安', '晚安', '晚灣', 'moko114', 'bye']):
-            if self.check_cooldowns(message.channel.name+ message.author.name+ '晚安', 3000): return
+            if self.check_cooldowns(message.channel.name+ message.author.name+ '晚安', 30000): return
             
             if self.check_cooldowns(message.channel.name+ '晚安', cache):
                 self.goodnight_msg.get(message.channel.name, ' @'+message.author.name)
             else:
                 self.goodnight_msg[message.channel.name]= '@'+message.author.name
             
-        elif any(_ in message.content.lower() for _ in ['早安', '安安', '早ㄤ' , '早早', '早呀', 'hi', 'happy', 'moko104', 'hoya', 'yaya', 'mumu', 'mokoola', 'mokoceng1', 'bell', 'ring', 'sheep', 'fish6an', 'iitiftb', 'iitinono', 'iiti00']):
-            if self.check_cooldowns(message.channel.name+ message.author.name+ '安安', 3000): return
+        elif any(_ in message.content.lower() for _ in ['早安', '安安', '早ㄤ' , '早早', '早呀', 'hi', 'happy', 'moko104', 'hoya', 'migiyaya', 'mumu', 'mokoola', 'mokoceng1', 'bell', 'ring', 'sheep', 'fish6an', 'iitiftb', 'iitinono', 'iiti00']):
+            if self.check_cooldowns(message.channel.name+ message.author.name+ '安安', 30000): return
             
             if self.check_cooldowns(message.channel.name+ '安安', cache):
                 self.hi_msg.get(message.channel.name, ' @'+message.author.name)

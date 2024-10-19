@@ -122,13 +122,16 @@ celerybeat.pid
 # Environments
 .env
 .venv
+key/
 env/
+line_bot/
 venv/
 ENV/
 env.bak/
 venv.bak/
 non.com.tw.*
-
+nginx.conf
+test.py
 
 # Spyder project settings
 .spyderproject

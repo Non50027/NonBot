@@ -75,8 +75,6 @@ def check_twitch_token(request):
     url= 'https://id.twitch.tv/oauth2/validate'
     
     # 在重新加載前，手動刪除舊的環境變數
-    # if 'TWITCH_BOT_TOKEN' in os.environ:
-    #     del os.environ['TWITCH_BOT_TOKEN']
     headers = {'Authorization': f"Bearer {os.getenv('TWITCH_BOT_TOKEN')}"}  
     
     response= requests.get(url, headers= headers)

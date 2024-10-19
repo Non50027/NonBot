@@ -44,14 +44,14 @@ function stop-BotProcess {
 Start-NewProcess -process_name "Django" -command "cd .\\backend && python .\\manage.py makemigrations && python .\\manage.py migrate && python .\\manage.py runserver 0.0.0.0:8615"
 
 # 啟動 Discord Bot
-# Start-NewProcess -process_name "Discord Bot" -command "python .\\bots\\discord_bot"
-Start-NewProcess -process_name "Bot" -command "python .\\bot"
+# Start-NewProcess -process_name "Bot" -command "python .\\bot"
 
 # 啟動前端
 Start-NewProcess -process_name "Vue3" -command "cd .\\frontend && yarn dev --host --port 5615"
 
 # 啟動 Uvicorn
-# Start-NewProcess -process_name "Uvicorn" -command "python .\\bots\\discord_bot\\server"
+Start-NewProcess -process_name "Uvicorn" -command "python .\\bot"
+
 
 # 啟動 Twitch Bot
 # Start-NewProcess -process_name "Twitch Bot" -command "python .\\bots\\twitch_bot"
@@ -62,13 +62,9 @@ while ($true) {
     $command = Read-Host "輸入指令 (-title, stopAll, exit)"
     
     switch ($command) {
-        # "dc_server" {
-        #     stop-BotProcess  -bot_command "python .\\bots\\discord_bot\\server"
-        #     Start-NewProcess -process_name "Uvicorn" -command "python .\\bots\\discord_bot\\server"
-        # }
-        "twitch" {
-            stop-BotProcess  -bot_command "python .\\bots\\twitch_bot"
-            Start-NewProcess -process_name "Twitch Bot" -command "python .\\bots\\twitch_bot"
+        "dc_server" {
+            stop-BotProcess  -bot_command "python .\\bot"
+            Start-NewProcess -process_name "Uvicorn" -command "python .\\bot"
         }
         "discord" {
             # stop-BotProcess  -bot_command "python .\\bots\\discord_bot"

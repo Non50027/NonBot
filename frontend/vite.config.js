@@ -27,8 +27,8 @@ export default defineConfig({
       port: 5615,  // Vite 運行的端口
     },
     https: {
-      key: 'D:\\DiscordBot\\NonBot\\non.com.tw.key',
-      cert: 'D:\\DiscordBot\\NonBot\\non.com.tw.pem',
+      key: 'D:\\DiscordBot\\NonBot\\key\\origin.key',
+      cert: 'D:\\DiscordBot\\NonBot\\key\\origin.pem',
     },
   }
 })

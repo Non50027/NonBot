@@ -10,7 +10,6 @@ class Bot(commands.Bot):
             intents= discord.Intents.all(),
             help_command= None
         )
-        print(f'\n\033[0;36mDiscord Bot\033[0m 啟動中 ...')
         self.twitch= None
     
     async def load_extensions(self):
@@ -50,7 +49,7 @@ class Bot(commands.Bot):
         '''
         會在機器人登入後但在連接到 Websocket 之前執行
         ''' 
-        
+        print(f'\n\n\033[0;36mDiscord Bot\033[0m 啟動中 ...')
         print(f'   \033[1;32m-\033[0m 已登入帳號 | \033[0;32m{self.user}\033[0m')
         
         # 載入檔案
