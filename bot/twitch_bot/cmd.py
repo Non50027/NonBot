@@ -8,11 +8,6 @@ class Cmd(CogCore):
         super().__init__( *args, **kwargs)
         self.msg= 'Craft to Exile 2'
     
-    # @commands.command(aliases=['咬我'])
-    # async def test(self, ctx: commands.Context):
-    #     if ctx.channel.name!= 'samoago': return
-    #     await ctx.send('')
-    
     # 更改回復指令的回覆內容
     @commands.command()
     @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
@@ -50,5 +45,5 @@ class Cmd(CogCore):
         data= r.json()
         print(data['data'])
         
-def setup(bot):
+def prepare(bot):
     bot.add_cog(Cmd(bot))

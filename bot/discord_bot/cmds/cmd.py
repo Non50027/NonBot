@@ -3,10 +3,6 @@ from discord.ext import commands
 from discord_bot.tool import CogCore
 
 class Cmd(CogCore):
-    
-    @commands.hybrid_command()
-    async def test(self, ctx: commands.Context):
-        return self.bot.guilds
         
     # return bot ping
     @commands.hybrid_command(description= '可以查看延遲', aliases= ['延遲'])
@@ -26,7 +22,6 @@ class Cmd(CogCore):
         await ctx.send(f'前10個記憶體分配最多的程式碼位置:\n{top_stats}', ephemeral= True) 
     
         # 同步 / 指令
-    
     @commands.hybrid_command(name= "sync", description= "同步 / 指令",)
     @commands.is_owner()
     async def sync(self, ctx: commands.Context):
@@ -38,7 +33,7 @@ class Cmd(CogCore):
             description= f"已同步 / 指令 {len(_)} 條",
             color= 0xABFFE4
         )
-        icon= discord.File(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))) ,"data\\icon.png"), filename= 'icon.png')
+        icon= discord.File(os.path.join(os.path.dirname(os.path.dirname(__file__)) ,"data\\icon.png"), filename= 'icon.png')
         embed.set_author(name= '農農的小烏龜', icon_url= 'attachment://icon.png')
         
         await ctx.send(file= icon, embed= embed)

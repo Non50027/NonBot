@@ -33,6 +33,7 @@ class Bot(twitch_commands.Bot) :
             token= token,
         )
         self.discord: discord_commands.Bot= discord_bot
+        self.twitch= self
         print('\n\033[0;36mTwitch Bot\033[0m - 啟動中 ...')
         
     def load_cog(self):
@@ -42,8 +43,9 @@ class Bot(twitch_commands.Bot) :
                 try:
                     print(f'     \033[1;32m-\033[0m {filename[:-3]} ... ', end='')
                     module_name = f'twitch_bot.{filename[:-3]}'
-                    module = importlib.import_module(module_name)
-                    module.setup(self)
+                    self.load_module(module_name)
+                    # module = importlib.import_module(module_name)
+                    # module.setup(self)
                     print('\033[1;32mOK\033[0m')
                 except Exception as e:
                     print(f'失敗 : \033[0;31m{e}\033[0m')
@@ -86,17 +88,14 @@ class Bot(twitch_commands.Bot) :
     
     
     async def event_reconnect(self):
-        self._ws.token= os.getenv('TWITCH_BOT_TOKEN')
+        self.token= os.getenv('TWITCH_BOT_TOKEN')
         print(f"重新連接 ... | {self.nick}")
         
         
     async def event_token_expired(self):
         
         print("Twitch token 已過期，正在嘗試更新...(；´д｀)")
-        response = requests.get(
-                f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/re_get_twitch_token/", 
-                verify= False
-            )
+        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/re_get_twitch_token/")
         response_data= response.json()
         
         if response.status_code==200:
@@ -104,7 +103,7 @@ class Bot(twitch_commands.Bot) :
             del os.environ['TWITCH_BOT_REFRESH_TOKEN']
             dotenv.load_dotenv()
             
-            print(f"Twitch Token 刷新成功 ヾ(＾∇＾) ... 新的時間為 {time.strftime('%H: %M: %S', time.gmtime(response_data['expires_in']))} sec")
+            print(f"Twitch Token 刷新成功 ヾ(＾∇＾) ... 新的時間為 {time.strftime('%H: %M: %S', time.localtime( time.time()+ response_data['expires_in']))}")
             return response_data['access_token']
         else:
             print(f"刷新 Twitch Token 失敗 (T_T) : {response}")

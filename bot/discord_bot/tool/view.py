@@ -11,7 +11,7 @@ class SelectFileView(discord.ui.View):
         placeholder="選擇檔案",
         options=[discord.SelectOption(
             label=_.split('\\')[-1][:-3], 
-            value='.'.join(_.split('discord_bot\\')[-1].split('\\'))[:-3]
+            value='.'.join(['discord_bot']+ _.split('discord_bot\\')[-1].split('\\'))[:-3]
         ) for _ in get_file_dir_list(os.path.dirname(os.path.dirname(__file__)))]
     )
     async def select_callback(self, interaction: discord.Interaction, select: discord.ui.Select):

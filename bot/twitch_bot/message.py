@@ -11,14 +11,18 @@ class Message(CogCore):
         self.temp_emoji= {}
         self.hi_msg= {}
         self.goodnight_msg= {}
-        self.loop_task_response_message.start()
-        
+        self.start_task()
+    
+    def start_task(self):
+        if self.loop_task_response_message.is_running():
+            self.loop_task_response_message.restart()
+        else:
+            self.loop_task_response_message.start()
     
     @tasks.loop(minutes= 1)
     async def loop_task_response_message(self):
-        await asyncio.sleep(5)
         
-        def filter_channel(ch_name, hello: bool)-> str| None:
+        def filter_channel(ch_name, hello: bool)-> str:
             
             def choice_emoji_message(key_word: str, emoji_list: list[str], fill_word: str|None= None, fill_word_site: bool= True)-> str:
                 '''
@@ -49,6 +53,9 @@ class Message(CogCore):
                     )
                 else: return ' moko114  mokoBebe '
             
+            elif ch_name== 'infinite0527':
+                if hello: return 'testHI'
+                else: return 'testGoodNight'
             elif ch_name== 'kspksp':
                 if hello:
                     return choice_emoji_message(
@@ -209,23 +216,24 @@ class Message(CogCore):
                 else: return ' abdd1223Sleep '
             return ''
                 
-        for key in self.hi_msg.keys():
-            msg= random.choice(['早安呀', '早ㄤ', '早ㄤ呀', '早早', '早安'])
-            msg= f" {self.hi_msg[key]} {msg}"
-            
-            msg+= filter_channel(key, True)
-            ch= self.bot.get_channel(key)            
-            await ch.send(msg)
-        self.hi_msg= {}
-        
-        for key in self.goodnight_msg.keys():
+        for channel_name, users in self.goodnight_msg.items():
             msg= random.choice(['晚灣', '晚ㄤ', '祝好夢', '晚安'])
-            msg= f" {self.goodnight_msg[key]} {msg}"
+            msg= f" {' '.join(users)} {msg}"
         
-            msg+= filter_channel(key, False)
-            ch= self.bot.get_channel(key)
+            msg+= filter_channel(channel_name, False)
+            ch= self.bot.get_channel(channel_name)
             await ch.send(msg)
-        self.goodnight_msg= {}
+        self.goodnight_msg.clear()
+        
+        for channel_name, users in self.hi_msg.items():
+            msg= random.choice(['早安呀', '早ㄤ', '早ㄤ呀', '早早', '早安'])
+            msg= f" {' '.join(users)} {msg}"
+            
+            msg+= filter_channel(channel_name, True)
+            ch= self.bot.get_channel(channel_name)            
+            await ch.send(msg)
+        self.hi_msg.clear()
+        
         
     @loop_task_response_message.before_loop
     async def loop_task_response_message_is_ready(self):
@@ -283,14 +291,16 @@ class Message(CogCore):
         
         if '農農' in message.content:
             # 印出包含我的留言
-            _= f'@{len(message.content.split("@"))-1}個人 {" ".join(message.content.split("@")[-1].split(" ")[1:])}' if len(message.content.split('@'))>2 else ' '.join(message.content.split(' ')[1:])
+            if len(message.content.split('@'))>2:
+                _= f'@{len(message.content.split("@"))-1}個人 {" ".join(message.content.split("@")[-1].split(" ")[1:])}'  
+            elif '@' in message.content: 
+                _= ' '.join(message.content.split(' ')[1:])
+            else: _= message.content
+                
             print(f'\033[0;35m{datetime.now().strftime("%H:%M:%S")}\033[0m - \033[0;31m{message.channel.name}\033[0m -> \033[0;32m{message.author.display_name}\033[0m{message.author.name} : {_}')
             non= self.bot.discord.get_user(482720097715093514)
-            try:
-                ch_owner= await message.channel.user()
-                await non.send(f'{ch_owner.display_name}-> {message.author.display_name}: {_}')
-            except Exception as e:
-                print('dc_send error', e)
+            ch_owner= await message.channel.user()
+            await non.send(f'{ch_owner.display_name}-> {message.author.display_name}: {_}')
         
         if message.author.name== 'Nightbot': return
         if message.author.name== 'StreamElements': return
@@ -298,18 +308,16 @@ class Message(CogCore):
         if any(_ in message.content.lower() for _ in ['晚安', '晚安', '晚灣', 'moko114', 'bye']):
             if self.check_cooldowns(message.channel.name+ message.author.name+ '晚安', 30000): return
             
-            if self.check_cooldowns(message.channel.name+ '晚安', cache):
-                self.goodnight_msg.get(message.channel.name, ' @'+message.author.name)
-            else:
-                self.goodnight_msg[message.channel.name]= '@'+message.author.name
+            if message.channel.name not in self.goodnight_msg:
+                self.goodnight_msg[message.channel.name]= []
+            self.goodnight_msg[message.channel.name].append(f'@{message.author.name}')
             
-        elif any(_ in message.content.lower() for _ in ['早安', '安安', '早ㄤ' , '早早', '早呀', 'hi', 'happy', 'moko104', 'hoya', 'migiyaya', 'mumu', 'mokoola', 'mokoceng1', 'bell', 'ring', 'sheep', 'fish6an', 'iitiftb', 'iitinono', 'iiti00']):
+        elif any(_ in message.content.lower() for _ in ['早安', '安安', '早ㄤ', 'ㄤㄤ' , '早早', '早呀', 'hi', 'happy', 'moko104', 'hoya', 'migiyaya', 'mumu', 'mokoola', 'mokoceng1', 'bell', 'ring', 'sheep', 'fish6an', 'iitiftb', 'iitinono', 'iiti00', 'idol']):
             if self.check_cooldowns(message.channel.name+ message.author.name+ '安安', 30000): return
             
-            if self.check_cooldowns(message.channel.name+ '安安', cache):
-                self.hi_msg.get(message.channel.name, ' @'+message.author.name)
-            else:
-                self.hi_msg[message.channel.name]= '@'+message.author.name
+            if message.channel.name not in self.hi_msg:
+                self.hi_msg[message.channel.name]= []
+            self.hi_msg[message.channel.name].append(f'@{message.author.name}')
             
             
     # 跟著歡回
@@ -357,5 +365,5 @@ class Message(CogCore):
             await message.channel.send(f' {msg} '*random.randint(1,3))
             del self.temp_emoji[message.channel.name]
             
-def setup(bot):
+def prepare(bot):
     bot.add_cog(Message(bot))

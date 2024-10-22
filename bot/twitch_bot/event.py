@@ -4,5 +4,5 @@ from twitch_bot.tool import CogCore
 class Event(CogCore):
     pass
     
-def setup(bot):
+def prepare(bot):
     bot.add_cog(Event(bot))

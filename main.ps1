@@ -50,7 +50,7 @@ Start-NewProcess -process_name "Django" -command "cd .\\backend && python .\\man
 Start-NewProcess -process_name "Vue3" -command "cd .\\frontend && yarn dev --host --port 5615"
 
 # 啟動 Uvicorn
-Start-NewProcess -process_name "Uvicorn" -command "python .\\bot"
+Start-NewProcess -process_name "Bot" -command "python .\\bot"
 
 
 # 啟動 Twitch Bot
@@ -62,9 +62,9 @@ while ($true) {
     $command = Read-Host "輸入指令 (-title, stopAll, exit)"
     
     switch ($command) {
-        "dc_server" {
+        "bot" {
             stop-BotProcess  -bot_command "python .\\bot"
-            Start-NewProcess -process_name "Uvicorn" -command "python .\\bot"
+            Start-NewProcess -process_name "Bot" -command "python .\\bot"
         }
         "discord" {
             # stop-BotProcess  -bot_command "python .\\bots\\discord_bot"

@@ -11,6 +11,7 @@ class Bot(commands.Bot):
             help_command= None
         )
         self.twitch= None
+        self.discord= self
     
     async def load_extensions(self):
         # 將樹狀目錄下的檔案包含路徑輸出為 List
