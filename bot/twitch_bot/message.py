@@ -113,7 +113,7 @@ class Message(CogCore):
                 else:
                     return choice_emoji_message(
                         'kirali502',
-                        ['Deadge', 'Kiralivanish', 'Pull', '888', 'Sleep'],
+                        ['Deadge', 'Pull', '888', 'Sleep'],
                     )
             
             elif ch_name== 'reirei_neon':
@@ -126,7 +126,7 @@ class Message(CogCore):
                 else:
                     return choice_emoji_message(
                         'reirei17',
-                        ['Rip', 'Bye', 'Tremble', 'Vanish', 'Zzz', 'Sweeep'],
+                        ['Rip', 'Bye', 'Tremble', 'Zzz', 'Sweeep'],
                         'Bye',
                         False
                     )
@@ -141,7 +141,7 @@ class Message(CogCore):
                 else:
                     return choice_emoji_message(
                         'yuzumi6',
-                        ['Deadge', 'Peepovanish1', 'Zz', 'Zzz'],
+                        ['Deadge', 'Zz', 'Zzz'],
                     )
                 
             elif ch_name== 'hibiki_meridianproject':
@@ -225,6 +225,7 @@ class Message(CogCore):
             await ch.send(msg)
         self.goodnight_msg.clear()
         
+        await asyncio.sleep(5)
         for channel_name, users in self.hi_msg.items():
             msg= random.choice(['早安呀', '早ㄤ', '早ㄤ呀', '早早', '早安'])
             msg= f" {' '.join(users)} {msg}"
@@ -312,7 +313,7 @@ class Message(CogCore):
                 self.goodnight_msg[message.channel.name]= []
             self.goodnight_msg[message.channel.name].append(f'@{message.author.name}')
             
-        elif any(_ in message.content.lower() for _ in ['早安', '安安', '早ㄤ', 'ㄤㄤ' , '早早', '早呀', 'hi', 'happy', 'moko104', 'hoya', 'migiyaya', 'mumu', 'mokoola', 'mokoceng1', 'bell', 'ring', 'sheep', 'fish6an', 'iitiftb', 'iitinono', 'iiti00', 'idol']):
+        elif any(_ in message.content.lower() for _ in ['早安', '安安', '早ㄤ', 'ㄤㄤ' , '早早', '早呀', 'hi', 'happy', 'mokoeee', 'moko104', 'mokolily1', 'hoya', 'migiyaya', 'mumu', 'mokoola', 'mokoceng1', 'bell', 'ring', 'sheep', 'fish6an', 'iitiftb', 'iitinono', 'iiti00', 'idol', 'takesichicken']):
             if self.check_cooldowns(message.channel.name+ message.author.name+ '安安', 30000): return
             
             if message.channel.name not in self.hi_msg:
@@ -358,7 +359,7 @@ class Message(CogCore):
             return
         
         # 一起刷並進入CD
-        if not self.check_cooldowns(message.channel.name+ 'emoji', 20):
+        if not self.check_cooldowns(message.channel.name+ 'emoji', 30):
             
             await asyncio.sleep(3)
             msg= self.temp_emoji[message.channel.name]*3 if self.temp_emoji[message.channel.name]=='7' else self.temp_emoji[message.channel.name]
@@ -367,3 +368,7 @@ class Message(CogCore):
             
 def prepare(bot):
     bot.add_cog(Message(bot))
+
+'''
+烟花正在跟 “ REX 肯特 虧皮 小鹽“ 一起玩【 瓦 】♡
+'''

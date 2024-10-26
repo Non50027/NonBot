@@ -1,6 +1,7 @@
 <template>
-  <!-- <h1>農農的小烏龜</h1> -->
-   <div><router-view/></div>
+  <div>
+    <router-view/>
+  </div>
 </template>
 
 <script setup>

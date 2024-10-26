@@ -6,7 +6,7 @@ dotenv.load_dotenv()
 class Bot(commands.Bot):
     def __init__(self) :
         super().__init__(
-            command_prefix= "!",
+            command_prefix= "|",
             intents= discord.Intents.all(),
             help_command= None
         )

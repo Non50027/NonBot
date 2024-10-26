@@ -103,7 +103,8 @@ class Bot(twitch_commands.Bot) :
             del os.environ['TWITCH_BOT_REFRESH_TOKEN']
             dotenv.load_dotenv()
             
-            print(f"Twitch Token 刷新成功 ヾ(＾∇＾) ... 新的時間為 {time.strftime('%H: %M: %S', time.localtime( time.time()+ response_data['expires_in']))}")
+            print(f"Twitch Token 刷新成功 ヾ(＾∇＾) ... ")
+            print(f"新的時間為: \033[0;35m{time.strftime('%H: %M: %S', time.localtime( time.time()+ response_data['expires_in']))}\033[0m")
             return response_data['access_token']
         else:
             print(f"刷新 Twitch Token 失敗 (T_T) : {response}")

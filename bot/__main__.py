@@ -9,7 +9,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 if __name__=="__main__":
     # asyncio.run(start_bot())
     uvicorn.run(
-        "discord_bot.server:app",
+        "server:app",
         host="0.0.0.0",
         port=7615,
     #     reload=True,

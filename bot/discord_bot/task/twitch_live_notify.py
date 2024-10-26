@@ -1,22 +1,28 @@
-from twitch_bot.tool import CogCore, restart_task
-from discord.ext import tasks
-import os, aiohttp, discord, requests
+from discord_bot.tool import CogCore, restart_task
+from discord.ext import tasks, commands
+import os, aiohttp, discord, requests, asyncio
 from datetime import datetime
 
     
-class LiveNotify(CogCore):
+class TwitchLiveNotify(CogCore):
     def __init__(self, bot):
         super().__init__(bot)
         self.live_user_id_list= []
         self.user_id= []
-        self.bot.discord.loop.create_task(self.start_task())
         
     async def fetch_data(self, url, headers):
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
-                response_data= await response.json()
-                return response_data if response_data else None
+                if response.status== 200:
+                    response_data= await response.json()
+                    return response_data
+                elif response.status== 401: return None
     
+    @commands.Cog.listener()
+    async def on_ready(self, ):
+        await self.bot.twitch.wait_for_ready()
+        self.bot.discord.loop.create_task(self.start_task())
+        
     async def start_task(self):
         restart_task(self.get_user_id)
         restart_task(self.on_live)
@@ -38,6 +44,10 @@ class LiveNotify(CogCore):
                 'Client-Id': os.getenv('VITE_TWITCH_BOT_ID'),
             }
             live_lists= await self.fetch_data(url, headers)
+            
+            if live_lists is None: 
+                print('live data is None', end='\r')
+                return
             
             if not live_lists.get('data'):
                 self.live_user_id_list= []
@@ -77,20 +87,6 @@ class LiveNotify(CogCore):
                 print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - \033[0;32m{live_data['user_name']}\033[0m 開台了")
         except Exception as e:
             print('live error', e)
-            # response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/check_twitch_token/", verify=False)
-            
-            # if response.status_code!=200:
-            #     print("\nTwitch token 已過期，正在嘗試更新...(；´д｀)")
-            #     response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/re_get_twitch_token/")
-                
-            #     if response.status_code!=200:
-            #         print(f"刷新 Twitch Token 失敗 (T_T) : {response}")
-            #         return
-            #     del os.environ['TWITCH_BOT_TOKEN']
-            #     del os.environ['TWITCH_BOT_REFRESH_TOKEN']
-            #     dotenv.load_dotenv()
-            #     print(f"Twitch Token 刷新成功 ヾ(＾∇＾) ... 新的時間為 {time.strftime('%H: %M: %S', time.gmtime(response_data['expires_in']))} sec")
-        
         
     @on_live.before_loop
     async def on_live_is_ready(self):
@@ -103,5 +99,5 @@ class LiveNotify(CogCore):
         print('     \033[1;32m-\033[0m 結束 twitch live 直播偵測')
 
 
-def prepare(bot):
-    bot.add_cog(LiveNotify(bot))
+async def setup(bot):
+    await bot.add_cog(TwitchLiveNotify(bot))

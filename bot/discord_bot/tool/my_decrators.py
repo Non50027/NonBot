@@ -18,7 +18,8 @@ class MyDecorators():
             @wraps(function_name)
             async def wrapper(self, *args, **kwargs):
                 # read json
-                with open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), f'data\\{json_filename}.json'), 'r', encoding='utf8') as file:
+                file_path= os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data' , f'{json_filename}.json')
+                with open(file_path, 'r', encoding='utf8') as file:
                     json_data= json.load(file)
                 '''
                 hybrid_command方法無法直接接收 dict 參數
@@ -30,9 +31,9 @@ class MyDecorators():
                 self.json_data= json_data
                 result = await function_name(self, *args, **kwargs)
                 
-                if self.json_data is None: return
+                if result is None: return
                 # save json
-                with open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), f'data\\{json_filename}.json'), 'w', encoding='utf8') as file:
+                with open(file_path, 'w', encoding='utf8') as file:
                     json.dump(result, file, ensure_ascii=False, indent=4)
                     
             return wrapper

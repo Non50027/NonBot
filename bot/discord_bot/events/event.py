@@ -1,9 +1,8 @@
 from datetime import datetime
 import gc, os, discord, requests, dotenv, time
 from discord.ext import commands
-from discord_bot.tool import CogCore, restart_task, create_ctx
+from discord_bot.tool import CogCore
 from twitch_bot import Bot as TwitchBot
-from twitch_bot.live_notify import LiveNotify
 
 dotenv.load_dotenv()
 
@@ -56,7 +55,7 @@ class Event(CogCore):
                 del os.environ['TWITCH_BOT_REFRESH_TOKEN']
                 dotenv.load_dotenv()
                 print(f"Twitch Token 刷新成功 ヾ(＾∇＾)")
-                print(f"新的時間為: {time.strftime('%H: %M: %S', time.gmtime(response_data['expires_in']))}")
+                print(f"新的時間為: \033[0;35m{time.strftime('%H: %M: %S', time.localtime( time.time()+ response_data['expires_in']))}\033[0m")
             except Exception as e:
                 print('start check token error:', e)
         if self.bot.twitch is None:
@@ -86,15 +85,17 @@ class Event(CogCore):
         
     @commands.Cog.listener()
     async def on_disconnect(self):
-        print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')} \033[0m失去連線 ...")
+        # print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')} \033[0m失去連線 ...")
         # await self.bot.twitch.close()
         # self.bot.twitch= None
+        pass
     
     @commands.Cog.listener()
     async def on_resumed(self):
-        print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')} \033[0m重新連線")
-        print(f'\n\033[0;36mDiscord Bot\033[0m - 已登入帳號 | \033[0;32m{self.bot.user}\033[0m')
+        # print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')} \033[0m重新連線")
+        # print(f'\n\033[0;36mDiscord Bot\033[0m - 已登入帳號 | \033[0;32m{self.bot.user}\033[0m')
         # await self.start_twitch_bot()
+        pass
         
 async def setup(bot):
     await bot.add_cog(Event(bot))
