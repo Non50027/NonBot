@@ -24,7 +24,13 @@ class Message(CogCore):
         
         def filter_channel(ch_name, hello: bool)-> str:
             
-            def choice_emoji_message(key_word: str, emoji_list: list[str], fill_word: str|None= None, fill_word_site: bool= True)-> str:
+            def choice_emoji_message(
+                    key_word: str, 
+                    hello_emoji_list: list[str]| None,
+                    goodnight_emoji_list: list[str]| None,
+                    hello_fill_word: str|None= None, hello_fill_word_site: bool= True,
+                    goodnight_fill_word: str|None= None, goodnight_fill_word_site: bool= True,
+                )-> str:
                 '''
                 若有 emoji_list 則從 emoji_list 中隨機抽取 1-2個可以重複的表符
                 然後若不選擇 fill_word 則會在只抽出一個的情況下重複表符
@@ -35,185 +41,159 @@ class Message(CogCore):
                 fill_word: 填充用的表符
                 fill_word_site: 填充表符的填充位置...預設為後面
                 '''
-                choice_emoji= random.choices(emoji_list, k= random.randint(1, 2))
-                if fill_word is None:
-                    choice_emoji= choice_emoji if len(choice_emoji)>1 else choice_emoji* 2
-                elif fill_word_site:
-                    choice_emoji= choice_emoji if len(choice_emoji)>1 else choice_emoji+[fill_word]
+                if hello:
+                    if hello_emoji_list is None: return ''
+                    choice_emoji= random.choices(hello_emoji_list, k= random.randint(1, 2))
+                    if len(choice_emoji)>1:
+                        choice_emoji= choice_emoji
+                    elif hello_fill_word is None:
+                        choice_emoji= choice_emoji* 2
+                    elif hello_fill_word_site:
+                        choice_emoji= choice_emoji+[hello_fill_word]
+                    else:
+                        choice_emoji= [hello_fill_word]+choice_emoji
                 else:
-                    choice_emoji= choice_emoji if len(choice_emoji)>1 else [fill_word]+choice_emoji
+                    if goodnight_emoji_list is None: return ''
+                    choice_emoji= random.choices(goodnight_emoji_list, k= random.randint(1, 2))
+                    if len(choice_emoji)>1:
+                        choice_emoji= choice_emoji
+                    elif goodnight_fill_word is None:
+                        choice_emoji= choice_emoji* 2
+                    elif goodnight_fill_word_site:
+                        choice_emoji= choice_emoji+[goodnight_fill_word]
+                    else:
+                        choice_emoji= [goodnight_fill_word]+choice_emoji
+                
                 return ''.join([' '+key_word+emoji+' ' for emoji in choice_emoji])
             
             if ch_name== 'hennie2001':
-                if hello:
-                    return choice_emoji_message(
-                        'moko',
-                        ['Hi1', '53', 'Dance', 'HAPPY2', 'Ceng1', '101', '100', '104', '106', '107', '116', '120', '125', 'Bell', 'Luo3', 'Sheep1', 'RouRou', 'Sheep5', 'Te'],
-                        'Love'
-                    )
-                else: return ' moko114  mokoBebe '
+                return choice_emoji_message(
+                    key_word= 'moko',
+                    hello_emoji_list= ['Hi1', '53', 'Dance', 'HAPPY2', 'Ceng1', '101', '100', '104', '106', '107', '116', '120', '125', 'Bell', 'Luo3', 'Sheep1', 'RouRou', 'Sheep5', 'Te'],
+                    hello_fill_word= 'Love',
+                    goodnight_emoji_list= ['114', 'Bebe']
+                )
             
             elif ch_name== 'infinite0527':
                 if hello: return 'testHI'
                 else: return 'testGoodNight'
+            
             elif ch_name== 'kspksp':
-                if hello:
-                    return choice_emoji_message(
-                        'kspksp',
-                        ['Love', 'Jump', 'Horn', 'Bell', 'Hi', 'Lick', 'Jump', 'Lovely', 'Move', 'Press', 'Wink'],
-                    )
-                else:
-                    return choice_emoji_message(
-                        'kspksp',
-                        ['Sleep', 'Sleeping', 'Tired', 'XX', 'Dead', 'Bed', 'Bye'],
-                        'Bye',
-                        False
-                    )
+                return choice_emoji_message(
+                    key_word= 'kspksp',
+                    hello_emoji_list= ['Love', 'Jump', 'Horn', 'Bell', 'Hi', 'Lick', 'Jump', 'Lovely', 'Move', 'Press', 'Wink'],
+                    goodnight_emoji_list= ['Sleep', 'Sleeping', 'Tired', 'XX', 'Dead', 'Bed', 'Bye'],
+                    goodnight_fill_word= 'Bye',
+                    goodnight_fill_word_site= False
+                )
             
             elif ch_name== 'qttsix':
                 if hello: return ' qttRub  qttHeart '
                 else: return ' qttSleep '
             
             elif ch_name== 'migi_tw':
-                if hello:
-                    return choice_emoji_message(
-                        'migi',
-                        ['Haoya', 'HIHI', 'Hoya', 'Lick', 'UWU', 'YAYA'],
-                        random.choice(['LOVE2', 'Milove'])
-                    )
-                else: 
-                    return choice_emoji_message(
-                        'migi',
-                        ['LAZY', 'MUMU', 'HUGG', 'Papa', 'XX', 'ZZZZ'],
-                        '88',
-                        False
-                    )
+                return choice_emoji_message(
+                    key_word= 'migi',
+                    hello_emoji_list= ['Haoya', 'HIHI', 'Hoya', 'Lick', 'UWU', 'YAYA'],
+                    hello_fill_word= random.choice(['LOVE2', 'Milove']),
+                    goodnight_emoji_list= ['LAZY', 'MUMU', 'HUGG', 'Papa', 'XX', 'ZZZZ'],
+                    goodnight_fill_word= '88',
+                    goodnight_fill_word_site= False
+                )
             
             elif ch_name== 'test40228':
-                if hello:
-                    return choice_emoji_message(
-                        'fish6',
-                        ['Hihi', '0U0', 'Heart', 'An', 'Happy']
-                    )
-                else:
-                    return choice_emoji_message(
-                        'fish6',
-                        ['Xx', 'Zz', '0U0', 'HUG', 'Heart'],
-                        'Bye',
-                        False
-                    )
+                return choice_emoji_message(
+                    key_word= 'fish6',
+                    hello_emoji_list= ['Hihi', '0U0', 'Heart', 'An', 'Happy'],
+                    goodnight_emoji_list= ['Xx', 'Zz', '0U0', 'HUG', 'Heart'],
+                    goodnight_fill_word= 'Bye',
+                    goodnight_fill_word_site= False
+                )
                 
             elif ch_name== 'kirali_neon':
-                if hello:
-                    return choice_emoji_message(
-                        'kirali502',
-                        ['Bigface', 'Aba', 'Hello', 'CLAP', 'Desk', 'Jump', 'Ring', 'Unicorn', 'Wiggle', 'Hehehe'],
-                        'Heart'
-                    )
-                else:
-                    return choice_emoji_message(
-                        'kirali502',
-                        ['Deadge', 'Pull', '888', 'Sleep'],
-                    )
+                return choice_emoji_message(
+                    key_word= 'kirali502',
+                    hello_emoji_list= ['Bigface', 'Aba', 'Hello', 'CLAP', 'Desk', 'Jump', 'Ring', 'Unicorn', 'Wiggle', 'Hehehe'],
+                    hello_fill_word= 'Heart',
+                    goodnight_emoji_list= ['Deadge', 'Pull', '888', 'Sleep'],
+                )
             
             elif ch_name== 'reirei_neon':
-                if hello:
-                    return choice_emoji_message(
-                        'reirei17',
-                        ['Catshake', 'Clap', 'Hi', 'Luvpotato', 'Riiiing', 'Shake', 'Shy', 'Weeeee', 'Slaptable', 'Unicorn'],
-                        'Heart'
-                    )
-                else:
-                    return choice_emoji_message(
-                        'reirei17',
-                        ['Rip', 'Bye', 'Tremble', 'Zzz', 'Sweeep'],
-                        'Bye',
-                        False
-                    )
+                return choice_emoji_message(
+                    key_word= 'reirei17',
+                    hello_emoji_list= ['Catshake', 'Clap', 'Hi', 'Luvpotato', 'Riiiing', 'Shake', 'Shy', 'Weeeee', 'Slaptable', 'Unicorn'],
+                    hello_fill_word= 'Heart',
+                    goodnight_emoji_list= ['Rip', 'Bye', 'Tremble', 'Zzz', 'Sweeep'],
+                    goodnight_fill_word= 'Bye',
+                    goodnight_fill_word_site= False
+                )
             
             elif ch_name== 'yuzumi_neon':
-                if hello:
-                    return choice_emoji_message(
-                        'yuzumi6',
-                        ['JumpRolling', 'Dance', 'Hi', 'Nenene', 'Ring', 'Yure', 'Wiggle', 'Unicorn', 'Waku'],
-                        'Heart'
-                    )
-                else:
-                    return choice_emoji_message(
-                        'yuzumi6',
-                        ['Deadge', 'Zz', 'Zzz'],
-                    )
+                return choice_emoji_message(
+                    key_word= 'yuzumi6',
+                    hello_emoji_list= ['JumpRolling', 'Dance', 'Hi', 'Nenene', 'Ring', 'Yure', 'Wiggle', 'Unicorn', 'Waku'],
+                    hello_fill_word= 'Heart',
+                    goodnight_emoji_list= ['Deadge', 'Zz', 'Zzz'],
+                )
                 
             elif ch_name== 'hibiki_meridianproject':
-                if hello:
-                    return choice_emoji_message(
-                        'hibiki27',
-                        ['HI', 'Eatpopcorn', 'Dino', 'CHU'],
-                        'Love'
-                    )
-                else:
-                    return ' hibiki27Rub  hibiki27BYE '
+                return choice_emoji_message(
+                    key_word= 'hibiki27',
+                    hello_emoji_list= ['HI', 'Eatpopcorn', 'Dino', 'CHU'],
+                    hello_fill_word= 'Love',
+                    goodnight_emoji_list= ['Rub', 'BYE']
+                )
                 
             elif ch_name== 'yoruno_moonlit':
                 if hello: return ' yoruno8Hihi  yoruno8Socute '
                 else: return ' yoruno8Sleepp  yoruno8Sleepp '
             
             elif ch_name== 'earendelxdfp':
-                if hello:
-                    return choice_emoji_message(
-                        'ddd2',
-                        ['Ring', 'Heart', 'Hi', 'Jumpjump', 'Jump', 'Why', 'Shake', 'Shakey'],
-                        'Heart'
-                    )
-                else:
-                    return choice_emoji_message(
-                        'ddd2',
-                        ['Die', 'Gg', '88'],
-                    )
+                return choice_emoji_message(
+                    key_word= 'ddd2',
+                    hello_emoji_list= ['Ring', 'Heart', 'Hi', 'Jumpjump', 'Jump', 'Why', 'Shake', 'Shakey'],
+                    hello_fill_word= 'Heart',
+                    goodnight_emoji_list= ['Die', 'Gg', '88'],
+                )
             
             elif ch_name== 'iitifox':
-                if hello:
-                    return choice_emoji_message(
-                        'iiti',
-                        ['00', 'CUTE', 'Flap', 'Hiii', 'Hii', 'Pq', 'Pr', 'Ring', 'TT1', 'TT2'],
-                        random.choice(['Loveu', 'Loveuu', 'Love'])
-                    )
-                else: return ' iitiZzz  iitiZzz '
+                return choice_emoji_message(
+                    key_word= 'iiti',
+                    hello_emoji_list= ['00', 'CUTE', 'Flap', 'Hiii', 'Hii', 'Pq', 'Pr', 'Ring', 'TT1', 'TT2'],
+                    hello_fill_word= random.choice(['Loveu', 'Loveuu', 'Love']),
+                    goodnight_emoji_list= ['Zzz', 'Zzz']
+                )
             
             elif ch_name== 'moondogs_celestial':
                 if hello: return ' moondo25LOVE  moondo25Happy '
-                else: return ' moondogs_celestial  moondogs_celestial '
+                else: return ' moondo25Ohno  moondo25Ohno '
             
             elif ch_name== 'mikiaoboshi':
-                if hello:
-                    return choice_emoji_message(
-                        'mikiao',
-                        ['Ayaya', 'Brother', 'Bla', 'Chu', 'Crab', 'Dance', 'Hearts', 'Hi', 'Yaaaa'],
-                        'Lovely'
-                    )
-                else: ''
+                return choice_emoji_message(
+                    key_word= 'mikiao',
+                    hello_emoji_list= ['Ayaya', 'Brother', 'Bla', 'Chu', 'Crab', 'Dance', 'Hearts', 'Hi', 'Yaaaa'],
+                    hello_fill_word= 'Lovely'
+                )
             
             elif ch_name== 'samoago':
-                if hello: 
                     return choice_emoji_message(
-                        'samoagO',
-                        ['BearFat', 'child', 'hi', 'flower', 'thumb', 'wave'],
-                        'heart'
+                        key_word= 'samoagO',
+                        hello_emoji_list= ['BearFat', 'child', 'hi', 'flower', 'thumb', 'wave'],
+                        hello_fill_word= 'heart',
+                        goodnight_emoji_list= ['warm', 'warm']
                     )
-                else: return ' samoagOwarm  samoagOwarm '
                 
             elif ch_name== '7a7a_o':
                 if hello: return ' fafababyHi  fafababyL '
                 else: return ' fafababyBaba '
         
             elif ch_name== 'hipudding1223':
-                if hello: 
-                    return choice_emoji_message(
-                        'abdd1223',
-                        ['Duai', 'Hello', 'VD'],
-                        'Kiss'
-                    )
-                else: return ' abdd1223Sleep '
+                return choice_emoji_message(
+                    key_word= 'abdd1223',
+                    hello_emoji_list= ['Duai', 'Hello', 'VD'],
+                    hello_fill_word= 'Kiss',
+                    goodnight_emoji_list= ['Sleep', 'Sleep']
+                )
             return ''
                 
         for channel_name, users in self.goodnight_msg.items():
@@ -323,15 +303,13 @@ class Message(CogCore):
             
     # 跟著歡回
     async def welcome(self, message: twitchio.Message):
-        if not message.content.startswith('歡回'): return
+        if '歡回' not in message.content: return
             
-        if not self.check_cooldowns(message.channel.name+ '歡回temp', 10):
-            self.temp_welcome_msg= message.content
-            return
+        if not self.check_cooldowns(message.channel.name+ '歡回temp', 10): return
         
         if not self.check_cooldowns(message.channel.name+ '歡回', 600):
             await asyncio.sleep(5)
-            await message.channel.send(self.temp_welcome_msg)
+            await message.channel.send(message.content)
             print(f'\033[0;35m{datetime.now().strftime("%H:%M:%S")}\033[0m - \033[0;31m{message.channel.name}\033[0m -> {message.content}')
         
     # 一起刷表符

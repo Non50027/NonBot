@@ -1,6 +1,6 @@
 from discord_bot.tool import CogCore, restart_task
 from discord.ext import tasks, commands
-import os, aiohttp, discord, requests, asyncio
+import os, aiohttp, discord, requests
 from datetime import datetime
 
     
@@ -19,7 +19,7 @@ class TwitchLiveNotify(CogCore):
                 elif response.status== 401: return None
     
     @commands.Cog.listener()
-    async def on_ready(self, ):
+    async def on_ready(self):
         await self.bot.twitch.wait_for_ready()
         self.bot.discord.loop.create_task(self.start_task())
         
@@ -52,6 +52,9 @@ class TwitchLiveNotify(CogCore):
             if not live_lists.get('data'):
                 self.live_user_id_list= []
                 return
+            
+            
+            await self.bot.twitch.join_channels([_['user_login'] for _ in live_lists['data']]+['infinite0527'])
             
             new_live_user_id_list= list(set([_['user_id'] for _ in live_lists['data']])- set(self.live_user_id_list))
             self.live_user_id_list= [_['user_id'] for _ in live_lists['data']]

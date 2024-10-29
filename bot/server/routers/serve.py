@@ -1,7 +1,7 @@
 
 from fastapi import APIRouter
 
-router= APIRouter(prefix='/option')
+router= APIRouter()
 
 @router.get('/')
 async def home():

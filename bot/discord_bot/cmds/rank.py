@@ -13,7 +13,7 @@ class Rank(CogCore):
     def userList(self, guildName: str, type: str) -> list:
         
         file_path= os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "rank.json")
-        print(file_path)
+    
         # read rank_json
         with open(file_path, 'r', encoding= 'utf8') as file:
             data = json.load(file)

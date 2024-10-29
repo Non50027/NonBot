@@ -1,5 +1,5 @@
 from datetime import datetime
-import gc, os, discord, requests, dotenv, time
+import gc, os, discord, requests, dotenv, time, httpx
 from discord.ext import commands
 from discord_bot.tool import CogCore
 from twitch_bot import Bot as TwitchBot
@@ -40,11 +40,15 @@ class Event(CogCore):
     
     async def start_twitch_bot(self):
         
-        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/check_twitch_token/", verify=False)
-        
+        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/check_twitch_token/")
+        # async with httpx.AsyncClient() as client:
+        #     response = await client.get(f"{os.getenv('VITE_BACKEND_DISCORD_URL')}/oauth/validate")
+
         if response.status_code!=200:
             print("\nTwitch token 已過期，正在嘗試更新...(；´д｀)")
             try:
+                # async with httpx.AsyncClient() as client:
+                #     response= await client.get(f"{os.getenv('VITE_BACKEND_DISCORD_URL')}/oauth/refresh-twitch-token")
                 response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/re_get_twitch_token/")
                 
                 if response.status_code!=200:

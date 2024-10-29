@@ -1,4 +1,4 @@
-import os, importlib, gc, requests, dotenv, time
+import os, importlib, gc, requests, dotenv, time, httpx
 from twitchio.ext import commands as twitch_commands
 from discord.ext import commands as discord_commands
 from datetime import datetime
@@ -8,28 +8,28 @@ class Bot(twitch_commands.Bot) :
     def __init__(self, token: str, discord_bot: discord_commands.Bot= None):
         super().__init__(
             prefix='!',
-            initial_channels= [
-                "infinite0527",
-                "hennie2001",
-                "qttsix",
-                "test40228",
-                "samoago",
-                'reirei_neon',
-                'kirali_neon',
-                'yuzumi_neon',
-                'hibiki_meridianproject',
-                'yoruno_moonlit',
-                'earendelxdfp',
-                'moondogs_celestial',
-                'xxhacucoxx_celestial',
-                'kspksp',
-                'iitifox',
-                'migi_tw',
-                'mikiaoboshi',
-                'hantears',
-                'hipudding1223',
-                '7a7a_o',
-                ],
+            # initial_channels= [
+            #     "infinite0527",
+            #     "hennie2001",
+            #     "qttsix",
+            #     "test40228",
+            #     "samoago",
+            #     'reirei_neon',
+            #     'kirali_neon',
+            #     'yuzumi_neon',
+            #     'hibiki_meridianproject',
+            #     'yoruno_moonlit',
+            #     'earendelxdfp',
+            #     'moondogs_celestial',
+            #     'xxhacucoxx_celestial',
+            #     'kspksp',
+            #     'iitifox',
+            #     'migi_tw',
+            #     'mikiaoboshi',
+            #     'hantears',
+            #     'hipudding1223',
+            #     '7a7a_o',
+            #     ],
             token= token,
         )
         self.discord: discord_commands.Bot= discord_bot
@@ -95,6 +95,9 @@ class Bot(twitch_commands.Bot) :
     async def event_token_expired(self):
         
         print("Twitch token 已過期，正在嘗試更新...(；´д｀)")
+        # async with httpx.AsyncClient() as client:
+        #     response = await client.get(f"{os.getenv('VITE_BACKEND_DISCORD_URL')}/oauth/refresh-twitch-token")
+        
         response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/re_get_twitch_token/")
         response_data= response.json()
         

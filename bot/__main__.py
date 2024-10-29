@@ -12,7 +12,8 @@ if __name__=="__main__":
         "server:app",
         host="0.0.0.0",
         port=7615,
-    #     reload=True,
+        # reload=True,
+        # reload_dirs= ['bot\\server\\routers'],
         ssl_keyfile=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'key', 'origin.key'),
         ssl_certfile=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'key', 'origin.pem')
     )

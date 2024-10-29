@@ -83,4 +83,3 @@ def update_env_variable(key, new_value):
     with open(file_path, "w") as file:
         file.writelines(updated_lines)
 
-    # print(f"{key} 已更新為 {new_value}!")

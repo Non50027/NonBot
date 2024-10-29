@@ -1,4 +1,4 @@
-import discord, os, requests, time
+import discord, os, requests, time, httpx
 from discord.ext import commands
 from discord_bot.tool import CogCore, fetch_twitch_data, MyDecorators
 from discord import app_commands
@@ -13,9 +13,15 @@ class TwitchCmd(CogCore):
         }
     
     @commands.hybrid_command()
+    async def is_join_channels(self, ctx: commands.Context):
+        print(self.bot.twitch.connected_channels)
+        await ctx.send(self.bot.twitch.connected_channels)
+    
+    @commands.hybrid_command()
     async def ck_twitch_token(self, ctx:commands.Context):
         
-        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/check_twitch_token/", verify=False)
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{os.getenv('VITE_BACKEND_DISCORD_URL')}/oauth/validate")
         response_data= response.json()
         
         if response.status_code==200:
@@ -27,7 +33,7 @@ class TwitchCmd(CogCore):
     @commands.hybrid_command()
     @MyDecorators.readJson('test')
     async def show_sub(self, ctx: commands.Context):
-        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/get_all_sub/", verify=False)
+        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/get_all_sub/")
         response_data= response.json()
         return response_data
     

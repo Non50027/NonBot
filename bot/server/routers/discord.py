@@ -24,6 +24,7 @@ async def lifespan(app: APIRouter):
 
 router= APIRouter(lifespan= lifespan)
 
+
 @router.get('/get_guilds')
 async def get_guilds():
     data= [{
