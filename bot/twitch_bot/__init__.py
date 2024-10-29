@@ -8,28 +8,6 @@ class Bot(twitch_commands.Bot) :
     def __init__(self, token: str, discord_bot: discord_commands.Bot= None):
         super().__init__(
             prefix='!',
-            # initial_channels= [
-            #     "infinite0527",
-            #     "hennie2001",
-            #     "qttsix",
-            #     "test40228",
-            #     "samoago",
-            #     'reirei_neon',
-            #     'kirali_neon',
-            #     'yuzumi_neon',
-            #     'hibiki_meridianproject',
-            #     'yoruno_moonlit',
-            #     'earendelxdfp',
-            #     'moondogs_celestial',
-            #     'xxhacucoxx_celestial',
-            #     'kspksp',
-            #     'iitifox',
-            #     'migi_tw',
-            #     'mikiaoboshi',
-            #     'hantears',
-            #     'hipudding1223',
-            #     '7a7a_o',
-            #     ],
             token= token,
         )
         self.discord: discord_commands.Bot= discord_bot
@@ -44,8 +22,6 @@ class Bot(twitch_commands.Bot) :
                     print(f'     \033[1;32m-\033[0m {filename[:-3]} ... ', end='')
                     module_name = f'twitch_bot.{filename[:-3]}'
                     self.load_module(module_name)
-                    # module = importlib.import_module(module_name)
-                    # module.setup(self)
                     print('\033[1;32mOK\033[0m')
                 except Exception as e:
                     print(f'失敗 : \033[0;31m{e}\033[0m')

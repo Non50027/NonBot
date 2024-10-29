@@ -49,12 +49,9 @@ Start-NewProcess -process_name "Django" -command "cd .\\backend && python .\\man
 # 啟動前端
 Start-NewProcess -process_name "Vue3" -command "cd .\\frontend && yarn dev --host --port 5615"
 
-# 啟動 Uvicorn
+# 啟動 fastAPI+ bot
 Start-NewProcess -process_name "Bot" -command "python .\\bot"
 
-
-# 啟動 Twitch Bot
-# Start-NewProcess -process_name "Twitch Bot" -command "python .\\bots\\twitch_bot"
 
 # 控制界面，讓你能啟動、重啟或停止每個進程
 while ($true) {
@@ -66,21 +63,19 @@ while ($true) {
             stop-BotProcess  -bot_command "python .\\bot"
             Start-NewProcess -process_name "Bot" -command "python .\\bot"
         }
-        "discord" {
-            # stop-BotProcess  -bot_command "python .\\bots\\discord_bot"
-            # Start-NewProcess -process_name "Discord Bot" -command "python .\\bots\\discord_bot"
-            stop-BotProcess  -bot_command "python .\\bot"
-            Start-NewProcess -process_name "Bot" -command "python .\\bot"
-        }
-        "stopAll" {
-            # 停止 Twitch bot
-            stop-BotProcess  -bot_command "python .\\bots\\twitch_bot"
+        # "discord" {
+        #     stop-BotProcess  -bot_command "python .\\bot"
+        #     Start-NewProcess -process_name "Bot" -command "python .\\bot"
+        # }
+        # "stopAll" {
+        #     # 停止 Twitch bot
+        #     stop-BotProcess  -bot_command "python .\\bots\\twitch_bot"
             
-            # 停止 Discord bot
-            stop-BotProcess  -bot_command "python .\\bots\\discord_bot"
+        #     # 停止 Discord bot
+        #     stop-BotProcess  -bot_command "python .\\bots\\discord_bot"
             
-            break
-        }
+        #     break
+        # }
         "exit" {
             break
         }
