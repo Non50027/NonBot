@@ -6,8 +6,6 @@ class Error(CogCore):
     @commands.Cog.listener()        
     async def on_command_error(self, ctx, error):
         
-        print(error)
-        
         # 錯誤訊息 (用海苔遮起來)
         await ctx.send('||'+ str(error)+ '||', ephemeral= True)
         
@@ -41,7 +39,9 @@ class Error(CogCore):
         
         # 其他例外
         else:
+            print('discord error', error)
             await ctx.send('我不會 இдஇ', ephemeral= True)
+            
 
 async def setup(bot):
     await bot.add_cog(Error(bot))

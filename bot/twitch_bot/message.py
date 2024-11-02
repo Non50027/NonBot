@@ -11,6 +11,7 @@ class Message(CogCore):
         self.temp_emoji= {}
         self.hi_msg= {}
         self.goodnight_msg= {}
+        self.temp_repeat_message= {}
         self.start_task()
     
     def start_task(self):
@@ -195,7 +196,8 @@ class Message(CogCore):
                     goodnight_emoji_list= ['Sleep', 'Sleep']
                 )
             return ''
-                
+        
+        await asyncio.sleep(5)
         for channel_name, users in self.goodnight_msg.items():
             msg= random.choice(['晚灣', '晚ㄤ', '祝好夢', '晚安'])
             msg= f" {' '.join(users)} {msg}"
@@ -260,13 +262,11 @@ class Message(CogCore):
         if message.author.name == self.bot.nick: return
         try:
             await self.message_response(message)
-            await self.welcome(message)
-            await self.emoji(message)
+            await self.repeat_message(message)
         except Exception as e:
             print('auto message error', e)
     
     async def message_response(self, message: twitchio.Message):
-        cache= 27
         
         if not [_ for _ in ['大家', '各位', '農農', 'infinite0527'] if _ in message.content]: return
         
@@ -293,60 +293,61 @@ class Message(CogCore):
                 self.goodnight_msg[message.channel.name]= []
             self.goodnight_msg[message.channel.name].append(f'@{message.author.name}')
             
-        elif any(_ in message.content.lower() for _ in ['早安', '安安', '早ㄤ', 'ㄤㄤ' , '早早', '早呀', 'hi', 'happy', 'mokoeee', 'moko104', 'mokolily1', 'hoya', 'migiyaya', 'mumu', 'mokoola', 'mokoceng1', 'bell', 'ring', 'sheep', 'fish6an', 'iitiftb', 'iitinono', 'iiti00', 'idol', 'takesichicken']):
+        elif any(_ in message.content.lower() for _ in ['早安', '安安', '早ㄤ', 'ㄤㄤ' , '早早', '早呀', 'hi', 'happy', 'mokoeee', 'moko104', 'mokolily1', 'hoya', 'migiyaya', 'mumu', 'mokoola', 'mokoceng1', 'bell', 'ring', 'sheep', 'fish6an', 'iitiftb', 'iitinono', 'iiti00', 'iitiboo', 'idol', 'takesichicken']):
             if self.check_cooldowns(message.channel.name+ message.author.name+ '安安', 30000): return
             
             if message.channel.name not in self.hi_msg:
                 self.hi_msg[message.channel.name]= []
             self.hi_msg[message.channel.name].append(f'@{message.author.name}')
             
+    # 刷一樣的回復
+    async def repeat_message(self, message: twitchio.Message):
+        '''
+        當 20 秒內有相同表符就跟著刷
+        或
+        當有連續三句一樣的話出現時跟著刷
+        '''
+        msg= None
+        # 表符
+        # 判斷內容只有單一表符並且至少 2 個
+        _content= message.content.split(' ')
+        if (len(_content)> 1 and len(set(_content))== 1):
+            # 儲存表符並開始計時
+            if not self.check_cooldowns(message.channel.name+ 'temp_emoji', 20):
+                self.temp_emoji.get(message.channel.name, _content[0])
+                return
             
-    # 跟著歡回
-    async def welcome(self, message: twitchio.Message):
-        if '歡回' not in message.content: return
+            # 不一樣的表符就跳出
+            if _content[0]!= self.temp_emoji.get(message.channel.name):
+                self.temp_emoji[message.channel.name]= _content[0]
+                return
             
-        if not self.check_cooldowns(message.channel.name+ '歡回temp', 10): return
+            # 一起刷並進入CD
+            if not self.check_cooldowns(message.channel.name+ 'emoji', 30):
+                await asyncio.sleep(3)
+                msg= f' {self.temp_emoji[message.channel.name]} '*random.randint(1,3)
+                del self.temp_emoji[message.channel.name]
         
-        if not self.check_cooldowns(message.channel.name+ '歡回', 600):
-            await asyncio.sleep(5)
-            await message.channel.send(message.content)
-            print(f'\033[0;35m{datetime.now().strftime("%H:%M:%S")}\033[0m - \033[0;31m{message.channel.name}\033[0m -> {message.content}')
-        
-    # 一起刷表符
-    async def emoji(self, message: twitchio.Message):
-        # 判斷內容只有單一表服並且至少 2 個
-        _= message.content.split(' ')
-        if not (len(_)> 1 and len(set(_))== 1): return
-        
-        # 判斷是否為我能用的表服
-        temp= [
-            'moko', 'qtt', 'fish', 'migi', 'iiti', 'samoag', 'mikiao',
-            'ksp', 'kirali', 'yuzumi', 'reirei', 'hibiki27', 'yoruno8',
-            'ddd2', 'moondo', 'hantea', 'abdd1223', 'fafababy'
-            ]
-        if not any([_[0].startswith(__) for __ in temp]): return
-        
-        # 儲存表符並開始計時10秒
-        if not self.check_cooldowns(message.channel.name+ 'temp_emoji', 20):
-            self.temp_emoji.get(message.channel.name, _[0])
-            return
-        
-        # 不一樣的表符就跳出
-        if _[0]!= self.temp_emoji.get(message.channel.name):
-            self.temp_emoji[message.channel.name]= _[0]
-            return
-        
-        # 一起刷並進入CD
-        if not self.check_cooldowns(message.channel.name+ 'emoji', 30):
+        # 文字
+        else:
+            # 排除有人醬肉
+            if '醬肉' in message.content: return
             
-            await asyncio.sleep(3)
-            msg= self.temp_emoji[message.channel.name]*3 if self.temp_emoji[message.channel.name]=='7' else self.temp_emoji[message.channel.name]
-            await message.channel.send(f' {msg} '*random.randint(1,3))
-            del self.temp_emoji[message.channel.name]
+            # 將聊天室的留言加入列表
+            self.temp_repeat_message.setdefault(message.channel.name, ['default'])
+            self.temp_repeat_message[message.channel.name].append(message.content)
+            
+            # 將較舊的留言自列表中刪除
+            if len(self.temp_repeat_message[message.channel.name])> 3:
+                self.temp_repeat_message[message.channel.name]= self.temp_repeat_message[message.channel.name][1:]
+            
+            # 判斷列表中元素是否全等 並加入CD
+            if len(set(self.temp_repeat_message[message.channel.name]))== 1 \
+                and not self.check_cooldowns(message.channel.name+ 'repeat', 60):
+                    msg= self.temp_repeat_message[message.channel.name][0]
+        if msg is None: return
+        await message.channel.send(msg)
+        
             
 def prepare(bot):
     bot.add_cog(Message(bot))
-
-'''
-烟花正在跟 “ REX 肯特 虧皮 小鹽“ 一起玩【 瓦 】♡
-'''

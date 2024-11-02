@@ -54,7 +54,7 @@ class TwitchLiveNotify(CogCore):
                 return
             
             
-            await self.bot.twitch.join_channels([_['user_login'] for _ in live_lists['data']]+['infinite0527'])
+            await self.bot.twitch.join_channels([_['user_login'] for _ in live_lists['data']]+['infinite0527', 'hibiki_meridianproject', 'hipudding1223'])
             
             new_live_user_id_list= list(set([_['user_id'] for _ in live_lists['data']])- set(self.live_user_id_list))
             self.live_user_id_list= [_['user_id'] for _ in live_lists['data']]

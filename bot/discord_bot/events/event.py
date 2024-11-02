@@ -1,4 +1,3 @@
-from datetime import datetime
 import gc, os, discord, requests, dotenv, time, httpx
 from discord.ext import commands
 from discord_bot.tool import CogCore
