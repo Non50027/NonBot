@@ -7,6 +7,8 @@
     <div v-else class="alert alert-danger" role="alert">
       離線
     </div>
+    <BButton @click="twitchOauth">Twitch bot</BButton>
+    <BButton @click="discordOauth">Discord bot</BButton>
   </div>
 </template>
 
@@ -36,6 +38,12 @@ onUpdated(()=>{
 
 });
 
+const twitchOauth= ()=>{
+    location.href= '/oauth/twitch'
+}
+const discordOauth= ()=>{
+    location.href= '/oauth/discord'
+}
 </script>
 
 <style scoped>

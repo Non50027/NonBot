@@ -4,6 +4,17 @@ from discord import app_commands
 from discord_bot.tool import CogCore
 
 class Message(CogCore):
+    
+    @commands.hybrid_command(description= '密語 讓bot 說話')
+    @app_commands.describe(msg= '想讓小烏龜說甚麼?')
+    async def private_send(self, ctx: commands.Context, user_id: str, *, msg: str):
+        '''
+        讓 bot 說話 使用 \n 換行
+        '''
+        user= self.bot.get_user(int(user_id))
+        print(user)
+        msg= '\n'.join(msg.split(r'\n'))
+        # await user.send(msg)
 
     # Bot附讀
     @commands.hybrid_command(description= '讓bot 說話')

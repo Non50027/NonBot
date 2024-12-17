@@ -1,4 +1,4 @@
-import discord, os, requests, time, httpx
+import discord, os, requests, time, httpx, aiohttp, asyncio
 from discord.ext import commands
 from discord_bot.tool import CogCore, fetch_twitch_data, MyDecorators
 from discord import app_commands
@@ -12,10 +12,6 @@ class TwitchCmd(CogCore):
             'token': os.getenv('TWITCH_BOT_TOKEN')
         }
     
-    @commands.hybrid_command()
-    async def is_join_channels(self, ctx: commands.Context):
-        print(self.bot.twitch.connected_channels)
-        await ctx.send(self.bot.twitch.connected_channels)
     
     @commands.hybrid_command()
     async def ck_twitch_token(self, ctx:commands.Context):
@@ -31,47 +27,21 @@ class TwitchCmd(CogCore):
         await ctx.send(msg, ephemeral= True)
     
     @commands.hybrid_command()
-    @MyDecorators.readJson('test')
     async def show_sub(self, ctx: commands.Context):
         response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/get_all_sub/")
         response_data= response.json()
-        return response_data
+        print(response_data)
     
-    @commands.hybrid_command()
-    @MyDecorators.readJson('subLive')
-    async def is_live(self, ctx: commands.Context):
-        '''顯示正在直播'''
-        headers = {
-            'Authorization': f"Bearer {self.twitch['token']}",
-            'Client-Id': self.twitch['id'],
-        }
-        url= f'https://api.twitch.tv/helix/streams?user_id='
-        msg=[]
-        for sub_channels in self.json_data.values():
-            subUser_id= [_['id'] for _ in sub_channels['twitch']]
-            user_id= '&user_id='.join(subUser_id)
-            try:
-                live_lists= await fetch_twitch_data(url+user_id, headers)
-            except Exception as e:
-                print('on_live error ', e)
-                return
-            
-            for sub_channel in sub_channels['twitch']:
-                
-                # 未在直播
-                if sub_channel['id'] not in [_['user_id'] for _ in live_lists['data']]:
-                    sub_channel['live']= 'False'
-                    continue
-                
-                # 加上直播中標籤
-                sub_channel['live']= 'True'
-                
-                live_data= [_ for _ in live_lists['data'] if _['user_id']== sub_channel['id']][0]
-                live_url= f"https://www.twitch.tv/{live_data['user_login']}"
-                msg.append(f" ### {live_data['user_name']} \t [{live_data['title']}](<{live_url}>)")
-                
-        await ctx.send('\n'.join(msg))
-        return self.json_data
+    async def fetch_data(self, url, headers):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, headers=headers) as response:
+                response_data= await response.json()
+                if response.status== 200:
+                    return response_data
+                elif response.status== 401: 
+                    print('live data is None', response_data, end='\r')
+                    return None
+    
     
     # 頻道清單
     async def channel_choice(self, interaction: discord.Interaction, current: str) -> List[app_commands.Choice[str]]:
@@ -93,28 +63,62 @@ class TwitchCmd(CogCore):
         # 用 twitch API 獲取頻道基本資料
         url= f"https://api.twitch.tv/helix/users?login={channel_name}"
         response= requests.get(url, headers=headers)
-        response_data= response.json()
         
-        if not response_data['data']: 
-            await ctx.send('查無頻道')
-            return self.json_data
+        if response.status_code!= 200: 
+            await ctx.send('頻道搜尋出現錯誤')
+            
+        response_twitch_user_data= response.json()
+        def find_emoji_prefix(id):
+            url= f"https://api.twitch.tv/helix/chat/emotes?broadcaster_id={id}"
+            response= requests.get(url, headers=headers)
+            if response.status_code== 200:
+                response_emojis_data= response.json()
+                emojis= [emoji['name'] for emoji in response_emojis_data['data']]
+                return os.path.commonprefix(emojis)
+            else: return None
+        emoji_prefix= find_emoji_prefix(response_twitch_user_data['data'][0]['id'])
         new_data={
             'guild': ctx.guild.id,
-            'user_id': response_data['data'][0]['id'],
-            'user_login': response_data['data'][0]['login'],
-            'user_name': response_data['data'][0]['display_name'],
-            'channel': channel_id,
+            'channel': int(channel_id),
             'role': None,
-            'background_url': response_data['data'][0]['offline_image_url'],
-            'icon_url': response_data['data'][0]['profile_image_url'],
-            'on_live': False,
+            'twitch_channel':{
+                'id': response_twitch_user_data['data'][0]['id'],
+                'login': response_twitch_user_data['data'][0]['login'],
+                'display_name': response_twitch_user_data['data'][0]['display_name'],
+                'background': response_twitch_user_data['data'][0]['offline_image_url'] or None,
+                'icon': response_twitch_user_data['data'][0]['profile_image_url'],
+                'emoji_prefix': emoji_prefix if emoji_prefix is not None else None
+            },
         }
         try:
-            response = requests.post(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/sub/",data= new_data, verify=False)
+            response = requests.post(
+                f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/sub/",
+                json= new_data
+            )
             response_data= response.json()
-            await ctx.send(f"成功將 {response_data['data']['user_name']} 直播通知加入 {self.bot.get_channel(int(channel_id)).mention} 頻道")
+            print(response_data)
+            await ctx.send(f"成功將 {response_data['twitch_channel']['display_name']} 直播通知加入 {self.bot.get_channel(int(channel_id)).mention} 頻道")
         except Exception as e:
             print('requests error', e)
+            await ctx.send(f'requests error ||{e}||')
+    
+    @commands.hybrid_command()
+    async def twitch_emoji(self, ctx):
+        headers = {
+            'Authorization': f"Bearer {self.twitch['token']}",
+            'Client-Id': self.twitch['id'],
+        }
+        url= f"https://api.twitch.tv/helix/chat/emotes?broadcaster_id=928328219"
+        response= requests.get(url, headers=headers)
+        response_data= response.json()
+        emojis= [emoji['name'] for emoji in response_data['data']]
+        print(os.path.commonprefix(emojis))
+        prefix= emojis[0]
+        for emoji in emojis[1:]:
+            while not emoji.startswith(prefix):
+                prefix= prefix[:-1]
+                if prefix== '': return
+        print(prefix)
     
 async def setup(bot):
     await bot.add_cog(TwitchCmd(bot))

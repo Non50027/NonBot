@@ -1,27 +1,29 @@
 from discord_bot.tool import CogCore, restart_task
 from discord.ext import tasks, commands
-import os, aiohttp, discord, requests
+import os, aiohttp, discord, requests, asyncio
 from datetime import datetime
 
     
 class TwitchLiveNotify(CogCore):
     def __init__(self, bot):
         super().__init__(bot)
+        self.count= 0
         self.live_user_id_list= []
         self.user_id= []
         
     async def fetch_data(self, url, headers):
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
+                response_data= await response.json()
                 if response.status== 200:
-                    response_data= await response.json()
                     return response_data
-                elif response.status== 401: return None
+                elif response.status== 401: 
+                    return None
     
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.twitch.wait_for_ready()
-        self.bot.discord.loop.create_task(self.start_task())
+        self.bot.loop.create_task(self.start_task())
+        
         
     async def start_task(self):
         restart_task(self.get_user_id)
@@ -31,7 +33,7 @@ class TwitchLiveNotify(CogCore):
     async def get_user_id(self):
         response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/get_all_sub/")
         response_data= response.json()
-        self.user_id= '&user_id='.join([_['user_id'] for _ in response_data])
+        self.user_id= '&user_id='.join([_['twitch_channel'][0]['id'] for _ in response_data])
     
     @tasks.loop(seconds= 30)
     async def on_live(self):
@@ -44,17 +46,11 @@ class TwitchLiveNotify(CogCore):
                 'Client-Id': os.getenv('VITE_TWITCH_BOT_ID'),
             }
             live_lists= await self.fetch_data(url, headers)
-            
-            if live_lists is None: 
-                print('live data is None', end='\r')
-                return
+            if live_lists is None: return
             
             if not live_lists.get('data'):
                 self.live_user_id_list= []
                 return
-            
-            
-            await self.bot.twitch.join_channels([_['user_login'] for _ in live_lists['data']]+['infinite0527', 'hibiki_meridianproject', 'hipudding1223'])
             
             new_live_user_id_list= list(set([_['user_id'] for _ in live_lists['data']])- set(self.live_user_id_list))
             self.live_user_id_list= [_['user_id'] for _ in live_lists['data']]
@@ -72,22 +68,23 @@ class TwitchLiveNotify(CogCore):
                     
                 response = requests.get(
                     f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/get_sub/", 
-                    data= {'user_id': live_data['user_id']}
+                    data= {'id': live_data['user_id']}
                     )
                 response_data= response.json()
                 
                 embed.set_author(
                         name= live_data['user_name'],
                         url= live_url,
-                        icon_url= response_data['icon_url']
+                        icon_url= response_data['twitch_channel'][0]['icon']
                         )
                 embed.add_field(name= '分類', value= live_data['game_name'], inline= False)
                 
                 tag= f'<@&{response_data["role"]}>' if response_data['role'] is not None else ''
-                ch= self.bot.discord.get_channel(int(response_data['channel']))
-                await ch.send(tag, embed= embed)
+                ch= self.bot.get_channel(response_data['channel'])
+                # await ch.send(tag, embed= embed)
                 
                 print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - \033[0;32m{live_data['user_name']}\033[0m 開台了")
+                await asyncio.sleep(1)
         except Exception as e:
             print('live error', e)
         

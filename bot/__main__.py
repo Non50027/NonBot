@@ -1,5 +1,4 @@
 import asyncio, os, uvicorn
-from discord_bot import start_bot
 
 # 禁用不安全請求的警告
 import urllib3

@@ -1,11 +1,11 @@
 <template>
     <div>
-        <h1>Twitch 授權結果</h1>
+        <h1>Twitch 農農的小烏龜 授權結果</h1>
         <div v-if="verification">
             <div v-if="code">
                 <p>授權成功</p>
                 <p>code : {{ code }}</p>
-                <p>scope : {{ scope }}</p>
+                <p>權限範圍 : {{ scope }}</p>
                 <BButton @click="clickButton">確認</BButton>
             </div>
             <p v-if="error">授權失敗，錯誤信息: {{ errorDescription }}</p>
@@ -54,6 +54,7 @@ const clickButton= ()=>{
     const url= `${import.meta.env.VITE_BACKEND_DJANGO_URL}/oauth/twitch/`
     axios.post(url, {'code':code.value}
     )
+    location.href= '/'
 }
 </script>
 

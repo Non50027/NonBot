@@ -1,5 +1,8 @@
 <template>
-
+    <div>
+        <div>這裡還沒有東西</div>
+        <BButton @click="clickButton">回首頁</BButton>
+    </div>
 </template>
 
 <script setup>
@@ -16,7 +19,9 @@ onMounted(()=>{
 onUpdated(()=>{
 
 });
-
+const clickButton= ()=>{
+    location.href= '/'
+}
 </script>
 
 <style scoped>

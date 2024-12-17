@@ -1,17 +1,16 @@
 import discord, asyncio, os, dotenv
 from discord.ext import commands
+from twitchio.ext import commands as twitch_commands
 
 dotenv.load_dotenv()
 
 class Bot(commands.Bot):
     def __init__(self) :
         super().__init__(
-            command_prefix= "|",
+            command_prefix= "!",
             intents= discord.Intents.all(),
             help_command= None
         )
-        self.twitch= None
-        self.discord= self
     
     async def load_extensions(self):
         # 將樹狀目錄下的檔案包含路徑輸出為 List
@@ -38,6 +37,9 @@ class Bot(commands.Bot):
         for file in file_list:
             try:
                 _= file.split('\\')
+                if _[-1].startswith('_'): 
+                    print(f'    \033[1;32m - \033[0m{_[-1][:-3]} ... 未完成的檔案', end='')
+                    continue
                 print(f'    \033[1;32m - \033[0m{_[-1][:-3]} ... ', end='')
                 _= ['discord_bot']+file.split('discord_bot\\')[-1].split('\\')
                 await self.load_extension('.'.join(_)[:-3])
@@ -65,5 +67,5 @@ bot= Bot()
 async def start_bot():
     await bot.start(os.getenv('DISCORD_BOT_TOKEN'))
     
-async def get_bot():
-    return bot
+# async def get_bot():
+#     return bot

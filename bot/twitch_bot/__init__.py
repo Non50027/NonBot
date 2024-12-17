@@ -1,17 +1,23 @@
 import os, importlib, gc, requests, dotenv, time, httpx
-from twitchio.ext import commands as twitch_commands
-from discord.ext import commands as discord_commands
+from twitchio.ext import commands # as twitch_commands
+# from discord.ext import commands as discord_commands
 from datetime import datetime
 
 
-class Bot(twitch_commands.Bot) :
-    def __init__(self, token: str, discord_bot: discord_commands.Bot= None):
+class Bot(commands.Bot) :
+    # def __init__(self, token: str, discord_bot: discord_commands.Bot= None):
+    def __init__(self, token: str, secret: str):
         super().__init__(
             prefix='!',
             token= token,
+            client_secret= secret,
+            initial_channels= [
+                    'infinite0527',
+                    'hibiki_meridianproject',
+                    'pigeoncwc',
+                    'zuoo846095',
+                ]
         )
-        self.discord: discord_commands.Bot= discord_bot
-        self.twitch= self
         print('\n\033[0;36mTwitch Bot\033[0m - 啟動中 ...')
         
     def load_cog(self):
@@ -36,45 +42,46 @@ class Bot(twitch_commands.Bot) :
         print(f'   \033[1;32m-\033[0m 載入指令: \033[1;35m{len(self.commands)}\033[0m 條')
         print('  \033[1;32m-\033[0;36m 啟動完成\033[0m')
 
+        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/get_all_sub/")
+        response_data= response.json()
+        subs= [_['twitch_channel'][0]['login'] for _ in response_data]
+        await self.join_channels(subs)
 
     # 指令執行後觸發...無論指令是否失敗
-    async def global_after_invoke(self, ctx: twitch_commands.Context):
-        """
-        指令執行後觸發...無論指令是否失敗
-        """
-        print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - 指令 {ctx.command.name} 在 {ctx.channel.name} 被 {ctx.author.name} 執行")
+    # async def global_after_invoke(self, ctx: twitch_commands.Context):
+    #     """
+    #     指令執行後觸發...無論指令是否失敗
+    #     """
+    #     print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - 指令 {ctx.command.name} 在 {ctx.channel.name} 被 {ctx.author.name} 執行")
         
-        # 強制執行垃圾回收
-        gc.collect()
+    #     # 強制執行垃圾回收
+    #     gc.collect()
         
     
     # 複寫原方法
-    async def event_command_error(self, ctx: twitch_commands.Context, error):
+    async def event_command_error(self, ctx: commands.Context, error):
         
         # 沒有指令
-        if isinstance(error, twitch_commands.errors.CommandNotFound):
+        if isinstance(error, commands.errors.CommandNotFound):
             # print(f"No --- command: {error}")
             pass
-        
+        elif isinstance(error, commands.CheckFailure):
+            print('不允許的頻道', end='\r')
         # CD 中
-        elif isinstance(error, twitch_commands.CommandOnCooldown):
-            print(f'指令 CD 中 ... 剩下 {error.retry_after:.2f} 秒')
+        elif isinstance(error, commands.CommandOnCooldown):
+            print(f'在 \033[0;34m{ctx.channel.name} \033[0m使用指令 \033[0;36m{ctx.command}\033[0m CD 中 ... 剩下 \033[0;32m{error.retry_after:.2f}\033[0m 秒')
         else:
             print(f'指令執行發生錯誤：{error}')
     
-    
-    async def event_reconnect(self):
-        self.token= os.getenv('TWITCH_BOT_TOKEN')
-        print(f"重新連接 ... | {self.nick}")
         
         
     async def event_token_expired(self):
         
-        print("Twitch token 已過期，正在嘗試更新...(；´д｀)")
-        # async with httpx.AsyncClient() as client:
-        #     response = await client.get(f"{os.getenv('VITE_BACKEND_DISCORD_URL')}/oauth/refresh-twitch-token")
+        print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - Twitch token 已過期，正在嘗試更新...(；´д｀)")
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{os.getenv('VITE_BACKEND_DISCORD_URL')}/oauth/refresh-twitch-token")
         
-        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/re_get_twitch_token/")
+        # response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/re_get_twitch_token/")
         response_data= response.json()
         
         if response.status_code==200:
