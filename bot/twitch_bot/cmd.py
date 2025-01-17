@@ -1,7 +1,6 @@
 import requests, os
 from twitch_bot.tool import CogCore, MyDecorators
 from twitchio.ext import commands
-from twitchio.ext.commands import CommandOnCooldown, CheckFailure
 
 
 class Cmd(CogCore):
@@ -9,18 +8,10 @@ class Cmd(CogCore):
         super().__init__( *args, **kwargs)
         self.is_game= {}
         self.is_who= {}
+        self.dc_url: str| None= 'https://discord.gg/rZ6QcNfSKu'
     
     def check_channel(self, ctx):
         return True if any(n== ctx.message.channel.name for n in ['pigeoncwc', 'infinite0527'])  else False
-    
-    # 更改回復指令的回覆內容
-    @commands.command()
-    @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
-    # async def setMsg(self, ctx: commands.Context, cmd_name: str, *message: str):
-    async def 星星腸(self, ctx: commands.Context, *message: str):
-        '''修改指令回覆內容'''
-        if not any(n==ctx.message.channel.name for n in ['infinite0527', 'samoago']): return
-        await ctx.channel.send(f"哈茲卡西內 勵志當個不斜的咖！！")
     
     # 更改回復指令的回覆內容
     @commands.command(aliases= ['setgame'])
@@ -33,7 +24,7 @@ class Cmd(CogCore):
         if not (ctx.author.is_mod or ctx.author.name == ctx.channel.name): return
         self.is_game.setdefault(ctx.channel.name, message)
         await ctx.channel.send(f"指令設置成功...內容為: {' '.join(self.is_game[ctx.channel.name])}")
-        
+    
     # 更改回復指令的回覆內容
     @commands.command(aliases= ['setwho'])
     @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
@@ -46,14 +37,27 @@ class Cmd(CogCore):
         await ctx.channel.send(f"指令設置成功...內容為: {'、'.join(self.is_who[ctx.channel.name])}")
     
     # 更改回復指令的回覆內容
+    @commands.command(aliases= ['dc_url'])
+    @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
+    # async def setMsg(self, ctx: commands.Context, cmd_name: str, *message: str):
+    async def setDcUrl(self, ctx: commands.Context, url: str):
+        '''修改指令回覆內容'''
+        if not self.check_channel(ctx): return
+        if not (ctx.author.is_mod or ctx.author.name == ctx.channel.name): return
+        self.dc_url= url
+        await ctx.channel.send(f"指令設置成功")
+    
     @commands.command(aliases= ['DC'])
     @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
     # async def setMsg(self, ctx: commands.Context, cmd_name: str, *message: str):
     async def dc(self, ctx: commands.Context):
         '''修改指令回覆內容'''
-        if not self.check_channel(ctx): return
-        if not (ctx.author.is_mod or ctx.author.name == ctx.channel.name): return
-        await ctx.channel.send(f"https://discord.gg/yMgzYr9n")
+        if ctx.message.channel.name== 'q771110':
+            url= 'https://discord.gg/aDeKQMck58'
+            await ctx.channel.send(f"DC邊緣人請加： {url} ")
+        elif self.check_channel(ctx):
+            await ctx.channel.send(f"DC 底家: {self.dc_url} 記得要去領取身分組喔~")
+        
     
     # 回復指定訊息
     @commands.command(aliases= ['Game', 'GAME', 'who', 'WHO'])
@@ -120,6 +124,32 @@ class Cmd(CogCore):
         # data= r.json()
         data= await self.bot.fetch_users(token= os.getenv('TWITCH_BOT_TOKEN'))
         print(data)
+        
+    # 更改回復指令的回覆內容
+    @commands.command(aliases= ["小薩", "狗狗", "阿狗", "老婆"])
+    @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
+    async def wife(self, ctx: commands.Context, *message: str):
+        '''修改指令回覆內容'''
+        if ctx.message.channel.name== 'samoago':
+            await ctx.channel.send("是我老婆")
+            
+    @commands.command(aliases= ["閃電", "傘電"])
+    @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
+    async def samoago_lightning_command(self, ctx: commands.Context, *message: str):
+        '''修改指令回覆內容'''
+        if ctx.message.channel.name== 'samoago':
+            await ctx.channel.send("https://clips.twitch.tv/FurryTolerantHorseTwitchRaid-CEV_PZijNwPka0-Z")
     
+    @commands.command()
+    @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
+    async def test_cmd(self, ctx: commands.Context, channel_name: str):
+        '''取得頻道基本資訊'''
+        if not self.check_channel(ctx): return
+        msg= await self.bot.search_channels(channel_name, live_only= True)
+        print(msg[0])
+        game= await self.bot.fetch_games(ids= [msg[0].game_id])
+        print(game[0])
+        
+        
 def prepare(bot):
     bot.add_cog(Cmd(bot))

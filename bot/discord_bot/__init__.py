@@ -1,6 +1,5 @@
 import discord, asyncio, os, dotenv
 from discord.ext import commands
-from twitchio.ext import commands as twitch_commands
 
 dotenv.load_dotenv()
 

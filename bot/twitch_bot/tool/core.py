@@ -1,7 +1,5 @@
 from twitchio.ext import commands
-import os
-from discord.ext import commands as discord_commands
-from twitchio.ext import commands as twitchio_commands
+import os, aiohttp
 
 class CogCore(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -9,12 +7,34 @@ class CogCore(commands.Cog):
         self.bot= bot
         self.token= os.getenv('TWITCH_BOT_TOKEN'),
         self.id= os.getenv('VITE_TWITCH_BOT_ID')
-        
-# 創建一個新的元類，繼承自 discord 和 twitchio 的元類
-class CombinedMeta(discord_commands.CogMeta, twitchio_commands.meta.CogMeta):
-    pass
+    
+    async def post_data(self, url, data):
+        async with aiohttp.ClientSession() as session:
+            header= {
+                'accept': 'application/json',
+                'Content-Type': 'application/json' 
+            }
+            async with session.post(url, headers=header, json= data) as response:
+                response_data= await response.json()
+                if response.status== 200:
+                    return response_data
+                elif response.status== 403: 
+                    print("資料已經存在，無法新增！")
+                    return None
+                else:
+                    print(f"發生錯誤，狀態碼: {response.status}")
+                    print(response.text)
 
-# 創建一個新的 Cog 類，同時繼承 discord 和 twitchio 的 Cog
-class TestCog(discord_commands.Cog, twitchio_commands.Cog, metaclass=CombinedMeta):
-    def __init__(self, bot):
-        self.bot = bot
+    async def get_data(self, url, data= None):
+        async with aiohttp.ClientSession() as session:
+            header= {
+                'accept': 'application/json',
+                'Content-Type': 'application/json' 
+            }
+            async with session.get(url, headers=header, json= data) as response:
+                response_data= await response.json()
+                if response.status== 200:
+                    return response_data
+                else:
+                    print(f"發生錯誤，狀態碼: {response.status}")
+                    print(response.text)

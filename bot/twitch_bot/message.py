@@ -27,7 +27,24 @@ class Message(CogCore):
         while True:
             response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/twitch/get_all_channel_data/")
             response_data= response.json()
-            self.emoji_prefix_list= [_['emoji_prefix'] for _ in response_data]+ ['zuoo84']
+            # self.emoji_prefix_list= [_['emoji_prefix'] for _ in response_data]+ ['zuoo84']
+            self.emoji_prefix_list= [
+                'zuoo84',
+                'moko',
+                'kspksp',
+                'yuzumi6',
+                'kirali502',
+                'ddd2',
+                'moondo25',
+                'iiti',
+                'mikiao',
+                'fish6',
+                'samoag',
+                'reirei621',
+                'migi',
+                'yoruno8',
+                'hibiki27',
+            ]
             await asyncio.sleep(6*60*60)
         
     async def _init_temp(self):
@@ -37,7 +54,7 @@ class Message(CogCore):
             await asyncio.sleep(5*60)
     
     async def loop_task_response_message(self):
-        print('     \033[1;32m-\033[0m 開始 Twitch chat hello 自動回覆')
+        print('   \033[1;32m-\033[0m 開始 Twitch chat hello 自動回覆')
         while True:
             await asyncio.sleep(5)
             def filter_channel(ch_name, hello: bool)-> str:
@@ -237,6 +254,7 @@ class Message(CogCore):
                     ['晚灣', '晚ㄤ', '祝好夢', '晚安'],
                     False
                 )
+                await asyncio.sleep(3)
                 await repeat_channels(
                     self.hi_msg,
                     ['早安呀', '早ㄤ', '早ㄤ呀', '早早', '早安'],
@@ -282,6 +300,8 @@ class Message(CogCore):
             await self.bot.handle_commands(message)
             return
         
+        
+        
         # 排除自己 & bot
         if any(message.author.name== name for name in [self.bot.nick, 'nightbot', 'streamelements', 'moobot']): return
         
@@ -292,7 +312,6 @@ class Message(CogCore):
             print('auto message error', e)
     
     async def message_response(self, message: twitchio.Message):
-        
         if message.author.name== message.channel.name: return
         
         if not [_ for _ in ['大家', '各位', '農農', 'infinite0527'] if _ in message.content]: return
@@ -331,7 +350,7 @@ class Message(CogCore):
         當有連續一樣的x留言出現時跟著刷
         表符與文字的邏輯分開處理
         '''
-        
+        # 排除部分頻道
         if any(_== message.channel.name for _ in ['kannazukilubee', 'seki_meridian' ,'nemesisxdfp']): return
         # 排除部分關鍵字
         if any(_ in message.content for _ in ['@', '+1', 'Cheer']): return
@@ -344,14 +363,11 @@ class Message(CogCore):
             
         if '歡回' in message.content:
             if self.check_cooldowns(message.channel.name+ 'welcome', 60*30): return
-            await asyncio.sleep(3)
+            await asyncio.sleep(5)
             await message.channel.send(message.content)
         # 表符
         # 判斷內容只有單一表符並且至少 2 個
         elif len(_content)> 1 and len(set(_content))== 1:
-            
-            # 排除部分頻道
-            
             # 只會使用我有訂閱的表符
             if not any(prefix in message.content for prefix in self.emoji_prefix_list): return
             
@@ -371,6 +387,7 @@ class Message(CogCore):
                 del self.temp_emoji[message.channel.name]
         # 文字
         else:
+            if message.content.replace(' ', '').isalnum(): return
             # 將聊天室的留言加入列表
             self.temp_repeat_message.setdefault(message.channel.name, [])
             self.temp_repeat_message[message.channel.name].append(message.content)

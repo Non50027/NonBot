@@ -126,7 +126,7 @@ class Rank(CogCore):
     @MyDecorators.readJson('rank')
     async def on_ready(self):
         # all guild
-        for guild in self.bot.discord.guilds:
+        for guild in self.bot.guilds:
             # 將已在語音頻道中的成員寫入資料ˋ
             for voiceChannel in guild.voice_channels:
                 # no member

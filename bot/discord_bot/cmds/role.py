@@ -2,6 +2,12 @@ import discord, requests, os
 from discord.ext import commands, tasks
 from discord import app_commands
 from discord_bot.tool import CogCore
+from fastapi.encoders import jsonable_encoder
+from fastapi import APIRouter, Depends
+from ...server.models import get_session, Role, RoleCreate, RoleOutput
+from sqlmodel import Session, select
+
+router= APIRouter()
 
 
 class Role(CogCore):
@@ -33,11 +39,12 @@ class Role(CogCore):
         role_id: 身份組
         '''
         data={
-            'guild': ctx.guild.id,
-            'role': int(role_id),
-            'message': int(message_id),
-            'emoji': int(emoji_id)
+            'id': int(role_id),
+            'message_id': int(message_id),
+            'emoji_id': int(emoji_id)
         }
+        url= f"os.getenv('VITE_BACKEND_DISCORD_URL')/"
+        self.post_data()
         response = requests.post(
             f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/set_role_message_emoji/",
             json= data
@@ -88,7 +95,6 @@ class Role(CogCore):
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
         for data in self.temp_data:
-            
             # 比對伺服器、訊息、表符
             if payload.guild_id!= data['guild']\
             or payload.message_id!= data['message']\
@@ -96,9 +102,29 @@ class Role(CogCore):
 
             guild= self.bot.get_guild(data['guild'])
             role= guild.get_role(data['role'])
-
-            await payload.member.remove_roles(role)
+            
+            member= guild.get_member(payload.user_id)
+            await member.remove_roles(role)
             return
 
 async def setup(bot):
     await bot.add_cog(Role(bot))
+
+@router.post("/role")
+async def post_reaction_role(data: RoleCreate, session: Session= Depends(get_session())) -> None:
+    data= jsonable_encoder(data)
+    
+    db_role= Role.model_validate(data)
+    session.add(db_role)
+    session.commit()
+    
+@router.get("/role", response_class= list[RoleOutput])
+async def get_reaction_role(session: Session= Depends(get_session())):
+    data= session.exec(select(Role)).all()
+    return data
+    
+@router.delete("/role/{role_id}")
+async def delete_reaction_role(role_id: int, session: Session= Depends(get_session())):
+    data= session.get(Role, role_id)
+    session.delete(data)
+    session.commit()

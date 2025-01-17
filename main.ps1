@@ -56,26 +56,13 @@ Start-NewProcess -process_name "Bot" -command "python .\\bot"
 # 控制界面，讓你能啟動、重啟或停止每個進程
 while ($true) {
     
-    $command = Read-Host "輸入指令 (-title, stopAll, exit)"
+    $command = Read-Host "輸入指令 (bot, exit)"
     
     switch ($command) {
         "bot" {
             stop-BotProcess  -bot_command "python .\\bot"
             Start-NewProcess -process_name "Bot" -command "python .\\bot"
         }
-        # "discord" {
-        #     stop-BotProcess  -bot_command "python .\\bot"
-        #     Start-NewProcess -process_name "Bot" -command "python .\\bot"
-        # }
-        # "stopAll" {
-        #     # 停止 Twitch bot
-        #     stop-BotProcess  -bot_command "python .\\bots\\twitch_bot"
-            
-        #     # 停止 Discord bot
-        #     stop-BotProcess  -bot_command "python .\\bots\\discord_bot"
-            
-        #     break
-        # }
         "exit" {
             break
         }

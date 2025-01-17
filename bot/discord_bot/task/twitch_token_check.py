@@ -50,12 +50,12 @@ class TwitchTokenCheck(CogCore):
     @check_twitch_token.before_loop
     async def check_twitch_token_ready(self):
         '''task 開始前執行'''
-        print('     \033[1;32m-\033[0m 開始 twitch token 輔助偵測')
+        print('   \033[1;32m-\033[0m 開始 twitch token 輔助偵測')
     
     @check_twitch_token.after_loop
     async def check_twitch_token_close(self):
         '''task 結束後執行'''
-        print('     \033[1;32m-\033[0m 結束 twitch token 輔助偵測')
+        print('   \033[1;32m-\033[0m 結束 twitch token 輔助偵測')
 
 
 async def setup(bot):

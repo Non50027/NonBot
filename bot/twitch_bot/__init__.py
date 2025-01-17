@@ -14,11 +14,24 @@ class Bot(commands.Bot) :
             initial_channels= [
                     'infinite0527',
                     'hibiki_meridianproject',
-                    'pigeoncwc',
                     'zuoo846095',
+                    'samoago',
+                    'hennie2001',
+                    'reirei_neon',
+                    'kirali_neon',
+                    'yuzumi_neon',
+                    'test40228',
+                    'yoruno_moonlit',
+                    'kspksp',
+                    'migi_tw',
+                    'moondogs_celestial',
+                    'mikiaoboshi',
+                    'pigeoncwc',
+                    'q771110',
                 ]
         )
-        print('\n\033[0;36mTwitch Bot\033[0m - 啟動中 ...')
+        
+    
         
     def load_cog(self):
         # 載入所有 cmd 底下的檔案
@@ -34,6 +47,7 @@ class Bot(commands.Bot) :
                     
     async def event_ready(self):
         
+        print('\n\033[0;36mTwitch Bot\033[0m - 啟動中 ...')
         print(f'   \033[1;32m-\033[0m 已登入帳號 | \033[0;32m{self.nick}\033[0m')
         print('   \033[1;32m-\033[0m 載入檔案 ...')
         
@@ -42,10 +56,12 @@ class Bot(commands.Bot) :
         print(f'   \033[1;32m-\033[0m 載入指令: \033[1;35m{len(self.commands)}\033[0m 條')
         print('  \033[1;32m-\033[0;36m 啟動完成\033[0m')
 
-        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/get_all_sub/")
-        response_data= response.json()
-        subs= [_['twitch_channel'][0]['login'] for _ in response_data]
-        await self.join_channels(subs)
+        # response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/get_all_sub/")
+        # response_data= response.json()
+        # for _ in response:
+        #     print(_, end='\n\n\n')
+        # subs= [_['twitch_channel'][0]['login'] for _ in response_data]
+        # await self.join_channels(subs)
 
     # 指令執行後觸發...無論指令是否失敗
     # async def global_after_invoke(self, ctx: twitch_commands.Context):
@@ -69,7 +85,7 @@ class Bot(commands.Bot) :
             print('不允許的頻道', end='\r')
         # CD 中
         elif isinstance(error, commands.CommandOnCooldown):
-            print(f'在 \033[0;34m{ctx.channel.name} \033[0m使用指令 \033[0;36m{ctx.command}\033[0m CD 中 ... 剩下 \033[0;32m{error.retry_after:.2f}\033[0m 秒')
+            print(f'在 \033[0;34m{ctx.channel.name} \033[0m使用指令 \033[0;36m{ctx.command.name}\033[0m CD 中 ... 剩下 \033[0;32m{error.retry_after:.2f}\033[0m 秒')
         else:
             print(f'指令執行發生錯誤：{error}')
     

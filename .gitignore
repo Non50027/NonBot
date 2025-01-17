@@ -132,6 +132,8 @@ venv.bak/
 non.com.tw.*
 nginx.conf
 test.py
+alembic/
+alembic.ini
 
 # Spyder project settings
 .spyderproject
