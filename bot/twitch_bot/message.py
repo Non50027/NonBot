@@ -14,21 +14,7 @@ class Message(CogCore):
         self.temp_repeat_message= {}
         self.emoji_prefix_list= []
         self.bot.loop.create_task(self._init_start_task())
-    
-    async def _init_start_task(self):
-        await self.bot.wait_for_ready()
-        task1 = asyncio.create_task(self._init_temp())
-        task2 = asyncio.create_task(self.loop_task_response_message())
-        task3 = asyncio.create_task(self.get_emoji_prefix())
-
-        await asyncio.gather(task1, task2, task3)
-    
-    async def get_emoji_prefix(self):
-        while True:
-            response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/twitch/get_all_channel_data/")
-            response_data= response.json()
-            # self.emoji_prefix_list= [_['emoji_prefix'] for _ in response_data]+ ['zuoo84']
-            self.emoji_prefix_list= [
+        self.emoji_prefix_list= [
                 'zuoo84',
                 'moko',
                 'kspksp',
@@ -45,7 +31,22 @@ class Message(CogCore):
                 'yoruno8',
                 'hibiki27',
             ]
-            await asyncio.sleep(6*60*60)
+    
+    async def _init_start_task(self):
+        await self.bot.wait_for_ready()
+        task1 = asyncio.create_task(self._init_temp())
+        task2 = asyncio.create_task(self.loop_task_response_message())
+        # task3 = asyncio.create_task(self.get_emoji_prefix())
+
+        await asyncio.gather(task1, task2)
+    
+    # async def get_emoji_prefix(self):
+        # while True:
+            # response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/twitch/get_all_channel_data/")
+            # response_data= response.json()
+            # self.emoji_prefix_list= [_['emoji_prefix'] for _ in response_data]+ ['zuoo84']
+            
+            # await asyncio.sleep(6*60*60)
         
     async def _init_temp(self):
         while True:
@@ -54,7 +55,7 @@ class Message(CogCore):
             await asyncio.sleep(5*60)
     
     async def loop_task_response_message(self):
-        print('   \033[1;32m-\033[0m 開始 Twitch chat hello 自動回覆')
+        print('  \033[1;32m-\033[0m 開始 Twitch chat hello 自動回覆')
         while True:
             await asyncio.sleep(5)
             def filter_channel(ch_name, hello: bool)-> str:

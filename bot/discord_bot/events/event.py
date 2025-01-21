@@ -39,19 +39,24 @@ class Event(CogCore):
     # 準備完成
     @commands.Cog.listener()
     async def on_ready(self):
-        print('   \033[1;32m-\033[0m 開始頻道測試 ...')
+        print('  \033[1;32m-\033[0m 開始頻道測試 ...')
         # 頻道測試
         # all guild
         for guild in self.bot.guilds:
             await self.test_guild_channels(guild)
-        print('   \033[1;32m-\033[0m 頻道測試結束')
+        print('  \033[1;32m-\033[0m 頻道測試結束')
         print('  \033[1;32m-\033[0;36m 啟動完成\033[0m')
         
     @commands.Cog.listener()
     async def on_disconnect(self):
-        print(f"\033[0;35m{datetime.datetime.now().strftime('%H:%M:%S')} \033[0m失去連線 ...")
+        print(f"\033[0;35m{datetime.datetime.now().strftime('%H:%M:%S')} Discord \033[0m失去連線 ...")
         # await self.bot.twitch.close()
         # self.bot.twitch= None
+        
+    @commands.Cog.listener()
+    async def on_member_join(self, member: discord.Member):
+        print(f"{member.name} 加入了 {member.guild.name}")
+        
         
 async def setup(bot):
     await bot.add_cog(Event(bot))

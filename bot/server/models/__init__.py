@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, create_engine, Session
 from .db_twitch import *
 from .db_discord import *
+from .db_sounds import *
 
 # 初始化 SQLite 資料庫連線
 DATABASE_URL = "sqlite:///./non_bot.db"

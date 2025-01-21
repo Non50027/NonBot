@@ -37,9 +37,9 @@ class Bot(commands.Bot):
             try:
                 _= file.split('\\')
                 if _[-1].startswith('_'): 
-                    print(f'    \033[1;32m - \033[0m{_[-1][:-3]} ... 未完成的檔案', end='')
+                    print(f'    \033[1;32m-\033[0m {_[-1][:-3]} ... 未完成的檔案', end='')
                     continue
-                print(f'    \033[1;32m - \033[0m{_[-1][:-3]} ... ', end='')
+                print(f'    \033[1;32m-\033[0m {_[-1][:-3]} ... ', end='')
                 _= ['discord_bot']+file.split('discord_bot\\')[-1].split('\\')
                 await self.load_extension('.'.join(_)[:-3])
                 print('\033[1;32mOK\033[0m')
@@ -52,14 +52,14 @@ class Bot(commands.Bot):
         會在機器人登入後但在連接到 Websocket 之前執行
         ''' 
         print(f'\n\n\033[0;36mDiscord Bot\033[0m 啟動中 ...')
-        print(f'   \033[1;32m-\033[0m 已登入帳號 | \033[0;32m{self.user}\033[0m')
+        print(f'  \033[1;32m-\033[0m 已登入帳號 | \033[0;32m{self.user}\033[0m')
         
         # 載入檔案
-        print('   \033[1;32m-\033[0m 載入檔案 ... ')
+        print('  \033[1;32m-\033[0m 載入檔案 ... ')
         self.loop.create_task(self.load_extensions())
         
         # 查看載入成功的 / 指令
-        print(f'   \033[1;32m-\033[0m 載入指令：\033[1;35m{len(await asyncio.create_task(self.tree.sync()))}\033[0m 條')
+        print(f'  \033[1;32m-\033[0m 載入指令：\033[1;35m{len(await asyncio.create_task(self.tree.sync()))}\033[0m 條')
     
 bot= Bot()
 

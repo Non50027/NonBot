@@ -65,29 +65,30 @@ async def close_twitch_bot(task):
 
 router= APIRouter()
 
-header = {
-    'Client-ID': os.getenv('VITE_TWITCH_BOT_ID'),
-    'Authorization': f"Bearer {os.getenv('TWITCH_BOT_TOKEN')}"
-}
-
 # 取得 twitch Bot 狀態
-@router.get('/state/{name}')
-async def get_bot_state(name: str):
+@router.get('/state')
+async def get_state():
     await bot.wait_for_ready()
     data= {
         'id': bot.user_id,
-        'login': bot.nick
+        'login': bot.nick,
+        'channels':[channel.name for channel in bot.connected_channels]
     }
+    
     return data
+
+@router.get("/reload")
+async def reload_cog():
+    bot.reload_cog()
 
 @router.get('/all-sub-channel', response_model= list[ChannelOutput])
 async def get_channel(session: Session = Depends(get_session)):
     channels = session.exec(select(Channel)).all()
     return channels
 
-@router.get('/channel/{name}', response_model= ChannelOutput)
-async def fetch_channel(name: str, session: Session = Depends(get_session)):
-    channel = session.exec(select(Channel).where(Channel.login == name)).first()
+@router.get('/channel/{id}', response_model= ChannelOutput)
+async def fetch_channel(id: int, session: Session = Depends(get_session)):
+    channel = session.get(Channel, id)
     if channel in None:
         raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail= "沒有資料")
     return channel
@@ -187,9 +188,9 @@ async def update_channel(name: str, session: Session = Depends(get_session)):
             
     return channel
     
-@router.delete('/channel/{name}')
-async def delete_channel(name: str, session: Session= Depends(get_session)):
-    channel= session.exec(select(Channel).where(Channel.login== name)).one()
+@router.delete('/channel/{id}')
+async def delete_channel(id: int, session: Session= Depends(get_session)):
+    channel= session.get(Channel, id)
     session.delete(channel)
     session.commit()
     # emoji= session.exec(select(Emoji).where(Emoji.prefix== channel.emoji_prefix)).all()

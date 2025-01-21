@@ -9,6 +9,8 @@ import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
 
 const app= createApp(App)
 
+app.provide('selfUrl', `${import.meta.env.VITE_BACKEND_URL}`)
+
 app.use(BootstrapVue3)
 app.use(router)
 

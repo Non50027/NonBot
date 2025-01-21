@@ -145,10 +145,8 @@ class Cmd(CogCore):
     async def test_cmd(self, ctx: commands.Context, channel_name: str):
         '''取得頻道基本資訊'''
         if not self.check_channel(ctx): return
-        msg= await self.bot.search_channels(channel_name, live_only= True)
-        print(msg[0])
-        game= await self.bot.fetch_games(ids= [msg[0].game_id])
-        print(game[0])
+        data= await self.bot.fetch_channel('q771110')
+        print(data)
         
         
 def prepare(bot):

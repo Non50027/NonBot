@@ -23,7 +23,8 @@ class CogCore(commands.Cog):
                     return None
                 else:
                     print(f"發生錯誤，狀態碼: {response.status}")
-                    print(response.text)
+                    print('內容: ', response.text)
+                    print('input Data: ', data)
 
     async def get_data(self, url, data= None):
         async with aiohttp.ClientSession() as session:
@@ -32,9 +33,13 @@ class CogCore(commands.Cog):
                 'Content-Type': 'application/json' 
             }
             async with session.get(url, headers=header, json= data) as response:
-                response_data= await response.json()
                 if response.status== 200:
+                    response_data= await response.json()
                     return response_data
+                elif response.status == 504:
+                    print('伺服器的回應超時')
                 else:
                     print(f"發生錯誤，狀態碼: {response.status}")
-                    print(response.text)
+                    print('內容: ', response.text)
+                    if data:
+                        print('input Data: ', data)

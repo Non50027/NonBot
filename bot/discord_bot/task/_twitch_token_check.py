@@ -10,7 +10,7 @@ class TwitchTokenCheck(CogCore):
         
     async def get_twitch_token_time(self):
         async with httpx.AsyncClient() as client:
-            response = await client.get(f"{os.getenv('VITE_BACKEND_DISCORD_URL')}/oauth/validate")
+            response = await client.get(f"{os.getenv('BACKEND_URL')}/oauth/validate")
         response_data= response.json()
         
         if response.status_code== 200: self.token_time= response_data['expires_in']
@@ -28,12 +28,12 @@ class TwitchTokenCheck(CogCore):
     async def check_twitch_token(self):
         '''檢查 token 並重新獲取'''
         async with httpx.AsyncClient() as client:
-            response = await client.get(f"{os.getenv('VITE_BACKEND_DISCORD_URL')}/oauth/validate")
+            response = await client.get(f"{os.getenv('BACKEND_URL')}/oauth/validate")
         if response.status_code== 200: return
         
         print(f"\033[0;35m{datetime.datetime.now().strftime('%H:%M:%S')}\033[0m - 刷新 Twitch Token ... sup")
         async with httpx.AsyncClient() as client:
-            response = await client.get(f"{os.getenv('VITE_BACKEND_DISCORD_URL')}/oauth/refresh-twitch-token")
+            response = await client.get(f"{os.getenv('BACKEND_URL')}/oauth/refresh-twitch-token")
         response_data= response.json()
         
         if response.status_code == 200:
@@ -50,12 +50,12 @@ class TwitchTokenCheck(CogCore):
     @check_twitch_token.before_loop
     async def check_twitch_token_ready(self):
         '''task 開始前執行'''
-        print('   \033[1;32m-\033[0m 開始 twitch token 輔助偵測')
+        print('  \033[1;32m-\033[0m 開始 twitch token 輔助偵測')
     
     @check_twitch_token.after_loop
     async def check_twitch_token_close(self):
         '''task 結束後執行'''
-        print('   \033[1;32m-\033[0m 結束 twitch token 輔助偵測')
+        print('  \033[1;32m-\033[0m 結束 twitch token 輔助偵測')
 
 
 async def setup(bot):

@@ -37,7 +37,7 @@ class Cmd(CogCore):
         embed.set_author(name= '農農的小烏龜', icon_url= 'attachment://icon.png')
         
         await ctx.send(file= icon, embed= embed)
-        
+    
     
 # Cog 載入 Bot 中
 async def setup(bot):

@@ -1,6 +1,5 @@
-import os, importlib, gc, requests, dotenv, time, httpx
-from twitchio.ext import commands # as twitch_commands
-# from discord.ext import commands as discord_commands
+import os, dotenv, time, httpx, twitchio
+from twitchio.ext import commands
 from datetime import datetime
 
 
@@ -32,36 +31,36 @@ class Bot(commands.Bot) :
         )
         
     
-        
-    def load_cog(self):
-        # 載入所有 cmd 底下的檔案
+    def _cog(self, fun_name):
         for filename in os.listdir(os.path.dirname(__file__)):
-            if not filename.startswith('_') and filename.endswith('.py'):
-                try:
-                    print(f'     \033[1;32m-\033[0m {filename[:-3]} ... ', end='')
-                    module_name = f'twitch_bot.{filename[:-3]}'
-                    self.load_module(module_name)
-                    print('\033[1;32mOK\033[0m')
-                except Exception as e:
-                    print(f'失敗 : \033[0;31m{e}\033[0m')
+            if filename.startswith('_') or not filename.endswith('.py'): continue
+                
+            try:
+                print(f'    \033[1;32m-\033[0m {filename[:-3]} ... ', end='')
+                module_name = f'twitch_bot.{filename[:-3]}'
+                fun_name(module_name)
+                print('\033[1;32mOK\033[0m')
+            except Exception as e:
+                print(f'失敗 : \033[0;31m{e}\033[0m')
+    
+    def load_cog(self):
+        print('  \033[1;32m-\033[0m 載入檔案 ...')
+        self._cog(self.load_module)
+    
+    def reload_cog(self):
+        print('  \033[1;32m-\033[0m 重新載入檔案 ...')
+        self._cog(self.reload_module)
                     
     async def event_ready(self):
         
         print('\n\033[0;36mTwitch Bot\033[0m - 啟動中 ...')
-        print(f'   \033[1;32m-\033[0m 已登入帳號 | \033[0;32m{self.nick}\033[0m')
-        print('   \033[1;32m-\033[0m 載入檔案 ...')
+        print(f'  \033[1;32m-\033[0m 已登入帳號 | \033[0;32m{self.nick}\033[0m')
         
         self.load_cog()
         
-        print(f'   \033[1;32m-\033[0m 載入指令: \033[1;35m{len(self.commands)}\033[0m 條')
-        print('  \033[1;32m-\033[0;36m 啟動完成\033[0m')
-
-        # response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/get_all_sub/")
-        # response_data= response.json()
-        # for _ in response:
-        #     print(_, end='\n\n\n')
-        # subs= [_['twitch_channel'][0]['login'] for _ in response_data]
-        # await self.join_channels(subs)
+        _= f'  \033[1;32m-\033[0m 載入指令: \033[1;35m{len(self.commands)}\033[0m 條\n'
+        _+= '  \033[1;32m-\033[0;36m 啟動完成\033[0m'
+        print(_)
 
     # 指令執行後觸發...無論指令是否失敗
     # async def global_after_invoke(self, ctx: twitch_commands.Context):
@@ -95,9 +94,8 @@ class Bot(commands.Bot) :
         
         print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - Twitch token 已過期，正在嘗試更新...(；´д｀)")
         async with httpx.AsyncClient() as client:
-            response = await client.get(f"{os.getenv('VITE_BACKEND_DISCORD_URL')}/oauth/refresh-twitch-token")
+            response = await client.get(f"{os.getenv('BACKEND_URL')}/oauth/refresh-twitch-token")
         
-        # response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/oauth/re_get_twitch_token/")
         response_data= response.json()
         
         if response.status_code==200:
@@ -112,3 +110,6 @@ class Bot(commands.Bot) :
             print(f"刷新 Twitch Token 失敗 (T_T) : {response}")
             return None
         
+    # async def event_join(self, channel: twitchio.Channel, user: twitchio.User):
+        # print(channel.name, user.display_name)
+    

@@ -1,4 +1,4 @@
-import discord, requests, aiohttp
+import discord, os
 from discord.ext import commands
 from discord_bot.tool import CogCore
 from discord import app_commands
@@ -14,10 +14,11 @@ class LiveNotify(CogCore):
         else:
             twitch_name= channel_url
             channel_url= f"https://www.twitch.tv/{twitch_name}"
-        url= f"https://api.non.com.tw/twitch/channel/{twitch_name}"
+            
+        url= f"{os.getenv('BACKEND_URL')}/twitch/channel/{twitch_name}"
         twitch_channel= await self.post_data(url)
         
-        url= f"https://api.non.com.tw/discord/sub-twitch/{channel_id}/{twitch_channel['id']}"
+        url= f"{os.getenv('BACKEND_URL')}/discord/sub-twitch/{channel_id}/{twitch_channel['id']}"
         await self.post_data(url)
         
         discord_channel= self.bot.get_channel(int(channel_id))

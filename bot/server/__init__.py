@@ -2,7 +2,7 @@ import asyncio
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from .models import init_db
-from .routers import api_discord, api_twitch, oauth
+from .routers import api_discord, api_twitch, oauth, api_sounds
 # from ..discord_bot.cmds import role
 
 # Lifespan 管理 FastAPI 的生命週期
@@ -30,5 +30,5 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(router= oauth.router, prefix='/oauth')
 app.include_router(router= api_discord.router, prefix='/discord')
-# app.include_router(router= role.router, prefix='/discord/reaction')
+app.include_router(router= api_sounds.router, prefix='/sounds')
 app.include_router(router= api_twitch.router, prefix='/twitch')

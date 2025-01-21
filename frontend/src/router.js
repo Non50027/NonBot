@@ -3,6 +3,7 @@ import home from './components/home.vue'
 import oauthTwitch from './oauth/twitch.vue'
 import oauthDiscord from './oauth/discord.vue'
 import callback from './oauth/callback.vue'
+import samoago from './components/samoago.vue'
 
 const routes=[
     { 
@@ -27,6 +28,16 @@ const routes=[
                 name: 'callback',
                 component: callback,
             },
+        ]
+    },
+    { 
+        path: '/samoago',
+        children: [
+            {
+                path: "home",
+                name: 'samoago-home',
+                component: samoago,
+            }
         ]
     },
 ]

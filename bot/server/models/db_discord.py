@@ -1,21 +1,13 @@
 from sqlmodel import Field, SQLModel, Relationship
 from . import Channel, ChannelOutput
 
-class RoleBase(SQLModel):
+class Role(SQLModel, table=True):
     role_id: int = Field(primary_key=True)
     message_id: int
     emoji_id: int
-
-class Role(RoleBase, table=True):
-    # 與 LiveNotifyChannel 一對一關聯
-    live_notify_channel_id: int| None= Field(foreign_key= "livenotifychannel.id", unique= True, nullable= False, ondelete= "CASCADE")
-    live_notify_channel: "LiveNotifyChannel" = Relationship(back_populates= "role")
-
-class RoleCreate(RoleBase):
-    ...
     
-class RoleOutput(RoleBase):
-    LiveNotifyChannel_id: int
+    live_notify_channel_id: int| None= Field(foreign_key= "livenotifychannel.id", ondelete= "CASCADE")
+    live_notify_channel: "LiveNotifyChannel" = Relationship(back_populates= "role")
 
 class GuildBase(SQLModel):
     id: int= Field(primary_key= True)

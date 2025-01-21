@@ -1,11 +1,11 @@
-from contextlib import asynccontextmanager
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 import asyncio, os, discord
+from datetime import datetime, timedelta, timezone
 from discord_bot import Bot
 from ..models import (
     get_session,
     LiveNotifyChannel, LiveNotifyChannelOutput,
-    Guild, RoleCreate, Role,
+    Guild, Role,
     Channel, 
 )
 from sqlmodel import Session, select
@@ -81,40 +81,96 @@ async def sub_twitch(channel_id: int, twitch_channel_id: int, session: Session= 
 class NotifyData(BaseModel):
     id: int
     login: str
-    display_name: str
+    name: str
     title: str
+    started_at: str
+    viewer_count: int
     game: str
+    icon_url: str
+    thumbnail_url: str
+    background_url: str
     
-@router.get('/notify')
-async def notify(data: NotifyData, session: Session= Depends(get_session)):
+@router.get('/start-live')
+async def start_live(data: NotifyData, session: Session= Depends(get_session)):
 
     data= jsonable_encoder(data)
 
-    embed= discord.Embed()
-    embed.title= data['title']
-    embed.color= 0x9700d0    #9700d0
-    live_url= f"https://www.twitch.tv/{data['login']}"
-    embed.url= live_url
-    
-    img= f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{data['login']}.jpg"
-    embed.set_image(url= img)
-        
-    
-    embed.set_author(
-            name= data['display_name'],
-            url= live_url,
-            icon_url= img
-            )
-    embed.add_field(name= '分類', value= data['game'], inline= False)
-    
-    # tag= f'<@&{response_data["role"]}>' if response_data['role'] is not None else ''
     twitch_channel= session.get(Channel, data['id'])
+
     for discord_channel in twitch_channel.discord_channels:
         ch= bot.get_channel(discord_channel.id)
-        await ch.send(embed= embed)
+        if ch is None: continue
+        
+        live_url= f"https://www.twitch.tv/{data['login']}"
+    
+        embed= discord.Embed()
+        embed.title= data['title']
+        embed.color= 0x9700d0    #9700d0
+        embed.url= live_url
+        embed.set_author(
+                name= data['name'],
+                url= live_url,
+                icon_url= data['icon_url'],
+                )
+        embed.add_field(name= '分類', value= data['game'], inline= True)
+        embed.timestamp= datetime.fromisoformat(data["started_at"])
+        embed.set_footer(text= '直播中', icon_url= data['icon_url'])
+        
+        # 直播中...更新嵌入內容
+        if ch.last_message is not None and ch.last_message.embeds[0].timestamp== datetime.fromisoformat(data['started_at']):
+            message= ch.last_message
+            url= data['thumbnail_url'].format(width= 400, height= 240)
+            embed.set_image(url= url)
+            embed.add_field(name= "觀看人數", value= data['viewer_count'], inline= True)
+            live_time= str(datetime.now(timezone.utc)- datetime.fromisoformat(data['started_at'])).split('.')[0]
+            embed.add_field(name= "直播時數", value= live_time, inline= True)
+            
+            await message.edit(embed= embed)
+            
+        else: # 新直播
+            embed.set_image(url= data['background_url'])
+            print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - \033[0;32m{data['name']}\033[0m 開台了~")
+            await ch.send(embed= embed)
+        
+@router.get('/stop-live/{channel_id}')
+async def stop_live(channel_id: int, session: Session= Depends(get_session)):
+    
+    twitch_channel= session.get(Channel, channel_id)
+    for discord_channel in twitch_channel.discord_channels:
+        ch= bot.get_channel(discord_channel.id)
+        
+        if ch is None: continue
+        msg= ch.last_message
+        
+        if msg is None: continue
+        embed= msg.embeds[0]
+        
+        if embed.footer.text== '直播中':
+            print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - \033[0;32m{twitch_channel.display_name}\033[0m 關台了~感謝收看~")
+            
+            embed.set_footer(text= '已結束直播...感謝收看')
+            await msg.edit(embed= embed)
         
 @router.get('/all-sub/{guild_id}', response_model= list[LiveNotifyChannelOutput])
 async def get_all_sub(guild_id: int, session: Session= Depends(get_session)):
     channels= session.exec(select(LiveNotifyChannel).where(LiveNotifyChannel.guild_id== guild_id)).all()
     return channels
 
+
+@router.post("/role")
+async def post_reaction_role(data: Role, session: Session= Depends(get_session)) -> None:
+    # data= jsonable_encoder(data)
+    db_role= Role.model_validate(data)
+    session.add(db_role)
+    session.commit()
+    
+@router.get("/role", response_model= list[Role])
+async def get_reaction_role(session: Session= Depends(get_session)):
+    data= session.exec(select(Role)).all()
+    return data
+    
+@router.delete("/role/{role_id}")
+async def delete_reaction_role(role_id: int, session: Session= Depends(get_session)):
+    data= session.get(Role, role_id)
+    session.delete(data)
+    session.commit()
