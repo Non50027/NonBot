@@ -42,6 +42,7 @@ class Notify(CogCore):
                 stream= [
                     {
                         'id': _.user.id,
+                        'video_id': _.id,
                         'name': _.user.name,
                         'title': _.title,
                         'started_at': _.started_at.isoformat(),

@@ -80,6 +80,7 @@ async def sub_twitch(channel_id: int, twitch_channel_id: int, session: Session= 
 
 class NotifyData(BaseModel):
     id: int
+    video_id: int
     login: str
     name: str
     title: str
@@ -130,6 +131,7 @@ async def start_live(data: NotifyData, session: Session= Depends(get_session)):
         else: # 新直播
             embed.set_image(url= data['background_url'])
             print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - \033[0;32m{data['name']}\033[0m 開台了~")
+            print(f"直播 ID: {data['video_id']}")
             await ch.send(embed= embed)
         
 @router.get('/stop-live/{channel_id}')

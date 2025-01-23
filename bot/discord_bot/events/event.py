@@ -27,7 +27,7 @@ class Event(CogCore):
         count= 0
         for channel in guild.channels:
             count+= 1
-            print(f'       \033[0;31m{guild.name}\033[0m [ {count} / {len(guild.channels)} ]', end='\r')
+            print(f'      \033[0;31m{guild.name}\033[0m [ {count} / {len(guild.channels)} ]', end='\r')
             perms = channel.permissions_for(guild.me)
             if not perms.send_messages:
                 print(f'\n      \033[1;32m-\033[0m 無法在 \033[0;34m{channel.name}\033[0m 發訊息...')
