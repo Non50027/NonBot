@@ -42,3 +42,4 @@ settings_path = r"C:\Users\user\AppData\Roaming\Cursor\User\settings.json"
 images_directory = r"N:\SubBonus"  # 你的圖片目錄
 
 update_settings(settings_path, images_directory)
+print(123)
