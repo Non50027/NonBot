@@ -1,25 +1,27 @@
 {
   "name": "frontend",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 61.63.220.46 --port 5615",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.8",
-    "axios": "^1.7.7",
-    "bootstrap": "^5.3.3",
-    "bootstrap-vue-3": "^0.5.1",
-    "dotenv": "^16.4.5",
-    "dotenv-expand": "^11.0.6",
-    "vue": "^3.4.37",
-    "vue-router": "^4.4.5"
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "dotenv-expand": "^12.0.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.1.2",
-    "vite": "^5.4.7"
+    "@bootstrap-vue-next/nuxt": "^0.26.21",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "bootstrap": "^5.3.3",
+    "bootstrap-vue-next": "^0.26.21",
+    "unplugin-vue-components": "^28.0.0",
+    "vite": "^6.0.11",
+    "vite-plugin-vue-devtools": "^7.7.0"
   }
 }

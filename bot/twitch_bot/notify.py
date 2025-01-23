@@ -32,6 +32,7 @@ class Notify(CogCore):
             
             user_ids= [_['id'] for _ in self.db_channels]
             streams= await self.bot.fetch_streams(user_ids= user_ids)
+            await asyncio.sleep(1)
             
             for sub in self.db_channels:
                 if sub['id'] not in [_.user.id for _ in streams]: 

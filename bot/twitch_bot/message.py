@@ -40,13 +40,6 @@ class Message(CogCore):
 
         await asyncio.gather(task1, task2)
     
-    # async def get_emoji_prefix(self):
-        # while True:
-            # response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/twitch/get_all_channel_data/")
-            # response_data= response.json()
-            # self.emoji_prefix_list= [_['emoji_prefix'] for _ in response_data]+ ['zuoo84']
-            
-            # await asyncio.sleep(6*60*60)
         
     async def _init_temp(self):
         while True:

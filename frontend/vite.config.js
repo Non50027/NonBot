@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import Components from 'unplugin-vue-components/vite'
+import {BootstrapVueNextResolver} from 'bootstrap-vue-next'
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 import path from 'path';
@@ -17,7 +19,14 @@ for (const key in myEnv.parsed) {
 
 // 初始化
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    Components({
+      resolvers: [BootstrapVueNextResolver()]
+    })
+  ],
+  modules: ['@bootstrap-vue-next/nuxt'],
+  css: ['bootstrap/dist/css/bootstrap.min.css'],
   define: {
     'process.env': viteEnv, // 只傳遞 VITE_ 開頭的變數給 Vite
   },
@@ -27,8 +36,8 @@ export default defineConfig({
       port: 5615,  // Vite 運行的端口
     },
     https: {
-      key: 'D:\\DiscordBot\\NonBot\\key\\origin.key',
-      cert: 'D:\\DiscordBot\\NonBot\\key\\origin.pem',
+      key: 'D:\\NonBot\\key\\origin.key',
+      cert: 'D:\\NonBot\\key\\origin.pem',
     },
   }
 })

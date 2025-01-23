@@ -1,8 +1,13 @@
 import asyncio
-from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from fastapi import FastAPI, Request
 from contextlib import asynccontextmanager
 from .models import init_db
+# from .routers import api_discord, oauth, api_sounds
 from .routers import api_discord, api_twitch, oauth, api_sounds
+from fastapi_csrf_protect.exceptions import CsrfProtectError
+from fastapi_csrf_protect import CsrfProtect
+from pydantic import BaseModel
 # from ..discord_bot.cmds import role
 
 # Lifespan 管理 FastAPI 的生命週期
@@ -26,6 +31,23 @@ async def lifespan(app: FastAPI):
 
 # 創建 FastAPI 應用，並註冊 lifespan
 app = FastAPI(lifespan=lifespan)
+
+# 設定 CSRF 配置
+class CsrfSettings(BaseModel):
+    secret_key: str = "SECRET_KEY"
+
+@CsrfProtect.load_config
+def get_csrf_config():
+    return CsrfSettings()
+
+# 處理 CSRF 錯誤
+@app.exception_handler(CsrfProtectError)
+def csrf_error_handler(request: Request, exc: CsrfProtectError):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.message}
+    )
+    
 
 
 app.include_router(router= oauth.router, prefix='/oauth')

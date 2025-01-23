@@ -40,14 +40,9 @@ function stop-BotProcess {
     }
 }
 
-# 執行 Django 的遷移並啟動後端
-Start-NewProcess -process_name "Django" -command "cd .\\backend && python .\\manage.py makemigrations && python .\\manage.py migrate && python .\\manage.py runserver 0.0.0.0:8615"
-
-# 啟動 Discord Bot
-# Start-NewProcess -process_name "Bot" -command "python .\\bot"
 
 # 啟動前端
-Start-NewProcess -process_name "Vue3" -command "cd .\\frontend && yarn dev --host --port 5615"
+Start-NewProcess -process_name "Vue3" -command "cd .\\frontend && npm run dev --host --port"
 
 # 啟動 fastAPI+ bot
 Start-NewProcess -process_name "Bot" -command "python .\\bot"

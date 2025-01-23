@@ -32,11 +32,6 @@ class Role(CogCore):
         emoji_id: 反應ID
         role_id: 身份組
         '''
-        # response = requests.post(
-        #     f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/set_role_message_emoji/",
-        #     json= data
-        # ) message_id:1329872262894977087 emoji_id:1329887685170561076 role_id:1329840501125283861
-        # response_data= response.json()
         emoji= ctx.guild.get_emoji(int(emoji_id))
         if emoji is None: 
             await ctx.send(f"查無表符", ephemeral= True)

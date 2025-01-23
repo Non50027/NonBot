@@ -1,7 +1,13 @@
 <template>
     <div>
         <h1>Twitch 農農的小烏龜 授權結果</h1>
-        <div v-if="verification">
+        <div v-if="code">
+            <p>授權成功</p>
+            <p>code : {{ code }}</p>
+            <p>權限範圍 : {{ scope }}</p>
+            <BButton @click="clickButton">確認</BButton>
+        </div>
+        <!-- <div v-if="verification">
             <div v-if="code">
                 <p>授權成功</p>
                 <p>code : {{ code }}</p>
@@ -12,7 +18,7 @@
         </div>
         <div v-else>
             <p>Verification Code Error</p>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -32,26 +38,30 @@ const verification= ref(false)
 // 載入前執行
 onBeforeMount(()=>{
     // URL 參數接收
-    const route = useRoute()    
+    const route = useRoute()
+    
+    code.value = route.query.code
+    scope.value = route.query.scope
+
     // 驗證 CSRF
-    const verificationCode= localStorage.getItem('csrfToken')
-    state.value= route.query.state
-    if (state.value===verificationCode){
-        // 驗證 Oauth
-        if (route.query.code){  // 驗證成功
-            code.value = route.query.code
-            scope.value = route.query.scope
-        }else{                  // 驗證失敗
-            error.value = route.query.error
-            errorDescription.value = route.query.error_description
-        }
-        verification.value= true
-    }else{
-        verification.value= false
-    }
+    // const verificationCode= localStorage.getItem('csrfToken')
+    // state.value= route.query.state
+    // if (state.value===verificationCode){
+    //     // 驗證 Oauth
+    //     if (route.query.code){  // 驗證成功
+    //         code.value = route.query.code
+    //         scope.value = route.query.scope
+    //     }else{                  // 驗證失敗
+    //         error.value = route.query.error
+    //         errorDescription.value = route.query.error_description
+    //     }
+    //     verification.value= true
+    // }else{
+    //     verification.value= false
+    // }
 });
 const clickButton= ()=>{
-    const url= `${import.meta.env.VITE_BACKEND_DJANGO_URL}/oauth/twitch/`
+    const url= `${import.meta.env.VITE_BACKEND_URL}/oauth/twitch-user-token`
     axios.post(url, {'code':code.value}
     )
     location.href= '/'

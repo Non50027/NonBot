@@ -1,17 +1,31 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status, Depends, Request
 from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
 from ..models import Token, get_session
 from ..tool import update_env_variable
 import os, requests, dotenv, time
-
+from fastapi_csrf_protect import CsrfProtect
 
 router= APIRouter()
+
+
+@router.get("/csrf-token")
+def get_csrf(csrf_protect: CsrfProtect = Depends()):
+    csrf_token = csrf_protect.generate_csrf()
+    return {"csrfToken": csrf_token}
+
+@router.post("/submit-form")
+def submit_form(csrf_protect: CsrfProtect = Depends()):
+    csrf_protect.validate_csrf(csrf_protect.get_csrf_from_headers())
+    return {"message": "Form submitted successfully!"}
 
 # 驗證
 @router.get('/validate', status_code= 200)
 async def validate_twitch_token():
+    
     url= 'https://id.twitch.tv/oauth2/validate'
+    
+    dotenv.load_dotenv()
     
     headers = {'Authorization': f"Bearer {os.getenv('TWITCH_BOT_TOKEN')}"}  
     
@@ -23,45 +37,34 @@ async def validate_twitch_token():
     
     return JSONResponse(response_data, status_code= status.HTTP_401_UNAUTHORIZED)
 
-# # 更新 .env 中的值
-# def update_env_variable(key, new_value):
-#     # 讀取現有的 .env 檔案內容
+@router.get('/twitch-client-token', status_code= 200)
+async def get_twitch_token():
+    data= {
+        'client_id': os.getenv('TWITCH_BOT_ID'),
+        'client_secret': os.getenv('TWITCH_BOT_SECRET'),
+        'grant_type': 'client_credentials'
+    }
+    url= 'https://id.twitch.tv/oauth2/token'
+    response= requests.post(url, data=data)
+    if response.status_code==200:
+        response_data= response.json()
+        print(f"有效時間至: \033[0;35m{time.strftime('%H: %M: %S', time.localtime( time.time()+ response_data['expires_in']))}\033[0m")
+        print(response_data)
+        update_env_variable('TWITCH_BOT_TOKEN', response_data['access_token'])
+        dotenv.load_dotenv()
+        
+        return JSONResponse(response_data, status_code= status.HTTP_200_OK)
+    else:
+        print('取得令牌失敗', response.status_code, response.text)
+        return JSONResponse({'message':'取得令牌失敗', 'error': response.text}, status_code= status.HTTP_400_BAD_REQUEST)
     
-#     file_path= os.path.join(os.path.dirname(__file__).split('\\bot')[0], '.env')
-#     with open(file_path, "r") as file:
-#         lines = file.readlines()
-        
-#     # 準備寫入的內容
-#     updated_lines = []
-#     found = False
-
-#     for line in lines:
-#         # 去掉空白及換行
-#         stripped_line = line.strip()
-#         # 如果這一行是我們要更新的變數
-#         if stripped_line.startswith(f"{key}="):
-#             # 更新該變數的值
-#             updated_lines.append(f"{key}={new_value}\n")
-#             found = True
-#         else:
-#             # 保留其他的變數
-#             updated_lines.append(line)
-
-#     # 如果變數不存在，則新增一行
-#     if not found:
-#         updated_lines.append(f"{key}={new_value}\n")
-        
-#     # 將更新後的內容寫回 .env 檔案
-#     with open(file_path, "w") as file:
-#         file.writelines(updated_lines)
-
-@router.post('/get-twitch-token', status_code= 200)
+@router.get('/twitch-user-token', status_code= 200)
 async def get_twitch_token(code: str):
     data= {
-        'client_id': os.getenv('VITE_TWITCH_BOT_ID'),
+        'client_id': os.getenv('TWITCH_BOT_ID'),
         'client_secret': os.getenv('TWITCH_BOT_SECRET'),
-        'code': code,
         'grant_type': 'authorization_code',
+        'code': code,
         'redirect_uri': f'https://non.com.tw/'
     }
     url= 'https://id.twitch.tv/oauth2/token'

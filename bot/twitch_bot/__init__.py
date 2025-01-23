@@ -110,6 +110,4 @@ class Bot(commands.Bot) :
             print(f"刷新 Twitch Token 失敗 (T_T) : {response}")
             return None
         
-    # async def event_join(self, channel: twitchio.Channel, user: twitchio.User):
-        # print(channel.name, user.display_name)
     

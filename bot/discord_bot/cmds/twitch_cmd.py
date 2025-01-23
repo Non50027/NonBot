@@ -31,7 +31,7 @@ class TwitchCmd(CogCore):
     @commands.hybrid_command()
     async def show_sub(self, ctx: commands.Context):
         guild_id= ctx.guild.id
-        response = requests.get(f"{os.getenv('VITE_BACKEND_DJANGO_URL')}/discord/all_sub/{guild_id}")
+        response = requests.get(f"{os.getenv('BACKEND_URL')}/discord/all_sub/{guild_id}")
         response_data= response.json()
         print(response_data)
     
