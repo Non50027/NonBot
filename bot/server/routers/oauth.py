@@ -9,16 +9,6 @@ from fastapi_csrf_protect import CsrfProtect
 router= APIRouter()
 
 
-@router.get("/csrf-token")
-def get_csrf(csrf_protect: CsrfProtect = Depends()):
-    csrf_token = csrf_protect.generate_csrf()
-    return {"csrfToken": csrf_token}
-
-@router.post("/submit-form")
-def submit_form(csrf_protect: CsrfProtect = Depends()):
-    csrf_protect.validate_csrf(csrf_protect.get_csrf_from_headers())
-    return {"message": "Form submitted successfully!"}
-
 # 驗證
 @router.get('/validate', status_code= 200)
 async def validate_twitch_token():

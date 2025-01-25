@@ -55,7 +55,7 @@ while ($true) {
     
     switch ($command) {
         "bot" {
-            stop-BotProcess  -bot_command "python .\\bot"
+            # stop-BotProcess  -bot_command "python .\\bot"
             Start-NewProcess -process_name "Bot" -command "python .\\bot"
         }
         "exit" {

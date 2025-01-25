@@ -12,12 +12,12 @@ class Notify(CogCore):
     
     async def _init_start_task(self):
         await self.bot.wait_for_ready()
-        task1 = asyncio.create_task(self.get_channel_name())
+        task1 = asyncio.create_task(self.get_all_sub())
         task2 = asyncio.create_task(self.on_live())
 
         await asyncio.gather(task1, task2)
         
-    async def get_channel_name(self):
+    async def get_all_sub(self):
         while True:
             url= f"{os.getenv('BACKEND_URL')}/twitch/all-sub-channel"
             self.db_channels= await self.get_data(url)
@@ -32,12 +32,21 @@ class Notify(CogCore):
             
             user_ids= [_['id'] for _ in self.db_channels]
             streams= await self.bot.fetch_streams(user_ids= user_ids)
-            await asyncio.sleep(1)
             
             for sub in self.db_channels:
                 if sub['id'] not in [_.user.id for _ in streams]: 
-                    url= f"{os.getenv('BACKEND_URL')}/discord/stop-live/{sub['id']}"
-                    await self.get_data(url)
+
+                    # videos= await self.bot.fetch_videos(user_id= sub["id"])
+                    # video=videos[0]
+
+                    data= {
+                        'user_id': sub['id'],
+                        # 'title': video.title,
+                        # 'url': video.url,
+                    }
+                    url= f"{os.getenv('BACKEND_URL')}/discord/stop-live"
+                    
+                    await self.get_data(url, data)
                     continue
                 
                 stream= [
@@ -60,7 +69,6 @@ class Notify(CogCore):
                 }
                 data.update(stream)
                 
-                await asyncio.sleep(1)
                 url= f"{os.getenv('BACKEND_URL')}/discord/start-live"
                 await self.get_data(url, data)
             

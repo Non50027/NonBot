@@ -4,6 +4,17 @@ from discord_bot.tool import CogCore
 
 class Cmd(CogCore):
         
+    @commands.hybrid_command()
+    @commands.is_owner()
+    async def test(self, ctx: commands.Context):
+        view= discord.ui.View()
+        button= discord.ui.Button(
+            label= "VOD",
+            url= 'https://www.youtube.com/watch?v=yUBxaveNEPs'
+        )
+        view.add_item(button)
+        await ctx.send(view= view)
+    
     # return bot ping
     @commands.hybrid_command(description= '可以查看延遲', aliases= ['延遲'])
     @commands.is_owner()

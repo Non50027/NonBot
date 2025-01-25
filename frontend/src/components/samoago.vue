@@ -13,20 +13,25 @@
                 centered
                 >
                 <!-- 文字方塊 -->
-                <BInputGroup prepend="名稱">
-                    <BFormInput v-model="soundName" placeholder="輸入名稱"></BFormInput>
-                </BInputGroup>
-
-                <!-- 檔案上傳 -->
-                <div class="input-group mt-3">
-                    <input class="form-control" type="file" @change="onFileChange">
-                </div>
-
-                <!-- 按鈕 -->
-                <div class="d-flex justify-content-end mt-3">
-                    <BButton variant="success" @click="submit" :disabled="!uploadedFile" class="me-2">提交</BButton>
-                    <BButton variant="secondary" @click="closeModal">取消</BButton>
-                </div>
+                
+                    <div v-if="loading" class="spinner-border text-success"></div>
+                    <div v-else>
+                        <BInputGroup prepend="名稱">
+                            <BFormInput v-model="soundName" placeholder="輸入名稱"></BFormInput>
+                        </BInputGroup>
+    
+                        <!-- 檔案上傳 -->
+                        <div class="input-group mt-3">
+                            <input class="form-control" type="file" @change="onFileChange">
+                        </div>
+                    
+    
+                        <!-- 按鈕 -->
+                        <div class="d-flex justify-content-end mt-3">
+                            <BButton variant="success" @click="submit" :disabled="!uploadedFile" class="me-2">提交</BButton>
+                            <BButton variant="secondary" @click="closeModal">取消</BButton>
+                        </div>
+                    </div>
                 </b-modal>
             </div>
                 
@@ -42,11 +47,9 @@ import { ref, reactive, computed, onUpdated, onMounted, onBeforeMount, inject } 
 import axios from 'axios'
 
 const selfUrl= `${inject('selfUrl')}/static/sounds/`
-// const optionsData= inject('optionsData')
-// const soundData= computed(() => optionsData?.sound|| [])
 const soundName= ref('')
 const isFormOpen = ref(false);
-const textInput = ref('');
+const loading = ref(false);
 const uploadedFile = ref(null);
 
 const soundData= reactive([])
@@ -80,6 +83,8 @@ const closeModal = () => {
 };
 
 const submit = () => {
+    loading.value= true
+
     if (!soundName.value || !uploadedFile.value) {
     alert('請填寫名稱並選擇檔案！');
     return;
@@ -103,6 +108,7 @@ const submit = () => {
     })
     .catch(error => {
         closeModal();
+        loading.value= false
         console.log(error)
         alert('提交失敗！');
     })

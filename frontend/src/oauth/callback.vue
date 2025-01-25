@@ -26,6 +26,7 @@
 import axios from 'axios';
 import { useRoute } from 'vue-router'
 import { ref, reactive, computed, onUpdated, onMounted, onBeforeMount } from 'vue'
+
 const code = ref()
 const scope = ref()
 

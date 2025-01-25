@@ -1,14 +1,16 @@
-import asyncio
+import asyncio, os, dotenv
 from fastapi.responses import JSONResponse
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from contextlib import asynccontextmanager
 from .models import init_db
 # from .routers import api_discord, oauth, api_sounds
 from .routers import api_discord, api_twitch, oauth, api_sounds
-from fastapi_csrf_protect.exceptions import CsrfProtectError
 from fastapi_csrf_protect import CsrfProtect
+from fastapi_csrf_protect.exceptions import CsrfProtectError
 from pydantic import BaseModel
 # from ..discord_bot.cmds import role
+
+dotenv.load_dotenv()
 
 # Lifespan 管理 FastAPI 的生命週期
 @asynccontextmanager
@@ -34,7 +36,7 @@ app = FastAPI(lifespan=lifespan)
 
 # 設定 CSRF 配置
 class CsrfSettings(BaseModel):
-    secret_key: str = "SECRET_KEY"
+    secret_key: str = os.getenv("CSRF_SECRET")
 
 @CsrfProtect.load_config
 def get_csrf_config():
@@ -48,6 +50,18 @@ def csrf_error_handler(request: Request, exc: CsrfProtectError):
         content={"detail": exc.message}
     )
     
+@app.get("/csrf-token")
+def get_csrf(csrf_protect: CsrfProtect = Depends()):
+    # 設置 CSRF Token 到 Cookie
+    response = JSONResponse(status_code= 200, content={"csrf_token": "cookie"})
+    csrf_protect.set_csrf_cookie(response)
+    return response
+
+@app.post("/submit-form")
+def submit_form(csrf_protect: CsrfProtect = Depends()):
+    # 驗證 CSRF Token
+    csrf_protect.validate_csrf_in_cookies(csrf_protect.get_csrf_from_headers())
+    return {"message": "Form submitted successfully!"}
 
 
 app.include_router(router= oauth.router, prefix='/oauth')

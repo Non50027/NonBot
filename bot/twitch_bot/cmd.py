@@ -126,7 +126,7 @@ class Cmd(CogCore):
         print(data)
         
     # 更改回復指令的回覆內容
-    @commands.command(aliases= ["小薩", "狗狗", "阿狗", "老婆"])
+    @commands.command(aliases= ["小薩", "狗狗", "阿狗"])
     @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
     async def wife(self, ctx: commands.Context, *message: str):
         '''修改指令回覆內容'''
@@ -142,11 +142,11 @@ class Cmd(CogCore):
     
     @commands.command()
     @commands.cooldown(rate=1, per=10, bucket=commands.Bucket.channel)
-    async def test_cmd(self, ctx: commands.Context, channel_name: str):
+    async def test_cmd(self, ctx: commands.Context, id: int):
         '''取得頻道基本資訊'''
         if not self.check_channel(ctx): return
-        data= await self.bot.fetch_channel('q771110')
-        print(data)
+        data= await self.bot.fetch_videos(user_id= id, type="archive")
+        print(data[0])
         
         
 def prepare(bot):

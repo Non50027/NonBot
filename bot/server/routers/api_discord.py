@@ -131,13 +131,17 @@ async def start_live(data: NotifyData, session: Session= Depends(get_session)):
         else: # 新直播
             embed.set_image(url= data['background_url'])
             print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - \033[0;32m{data['name']}\033[0m 開台了~")
-            print(f"直播 ID: {data['video_id']}")
             await ch.send(embed= embed)
         
-@router.get('/stop-live/{channel_id}')
-async def stop_live(channel_id: int, session: Session= Depends(get_session)):
+class StopLive(BaseModel):
+    user_id: int
+    # title: str
+    # url: str        
+
+@router.get('/stop-live')
+async def stop_live(data: StopLive, session: Session= Depends(get_session)):
     
-    twitch_channel= session.get(Channel, channel_id)
+    twitch_channel= session.get(Channel, data.user_id)
     for discord_channel in twitch_channel.discord_channels:
         ch= bot.get_channel(discord_channel.id)
         
@@ -151,7 +155,18 @@ async def stop_live(channel_id: int, session: Session= Depends(get_session)):
             print(f"\033[0;35m{datetime.now().strftime('%H:%M:%S')}\033[0m - \033[0;32m{twitch_channel.display_name}\033[0m 關台了~感謝收看~")
             
             embed.set_footer(text= '已結束直播...感謝收看')
-            await msg.edit(embed= embed)
+            
+            view= None
+            # if data['title']== embed.title:
+            #     view= discord.ui.View()
+            #     button= discord.ui.Button(
+            #         label= "VOD",
+            #         url= data['url']
+            #     )
+            #     view.add_item(button)
+            
+            await msg.edit(embed= embed, view= view)
+            
         
 @router.get('/all-sub/{guild_id}', response_model= list[LiveNotifyChannelOutput])
 async def get_all_sub(guild_id: int, session: Session= Depends(get_session)):

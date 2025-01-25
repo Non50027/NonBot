@@ -29,6 +29,9 @@ class ChannelCreate(ChannelBase):
     emojis: list["Emoji"]
     
 class ChannelOutput(ChannelBase):
+    ...
+    
+class ChannelOutputWithEmoji(ChannelBase):
     emojis: list['Emoji']| None
     
 class ChannelOutputWithDiscord(ChannelOutput):

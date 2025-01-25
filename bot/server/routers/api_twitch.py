@@ -2,7 +2,7 @@ import asyncio, os, time, dotenv, requests
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from twitch_bot import Bot
-from ..models import get_session, Channel, Emoji, ChannelOutput
+from ..models import get_session, Channel, Emoji, ChannelOutput, ChannelOutputWithEmoji
 from sqlmodel import Session, select
 from ..tool import update_env_variable
 
@@ -94,7 +94,7 @@ async def fetch_channel(id: int, session: Session = Depends(get_session)):
     return channel
 
 
-@router.post('/channel/{name}', response_model= ChannelOutput)
+@router.post('/channel/{name}', response_model= ChannelOutputWithEmoji)
 async def create_channel(name: str, session: Session = Depends(get_session)):
     # 取得使用者資料
     users= await bot.fetch_users(names= [name])
