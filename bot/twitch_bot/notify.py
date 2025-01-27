@@ -36,13 +36,13 @@ class Notify(CogCore):
             for sub in self.db_channels:
                 if sub['id'] not in [_.user.id for _ in streams]: 
 
-                    # videos= await self.bot.fetch_videos(user_id= sub["id"])
-                    # video=videos[0]
+                    videos= await self.bot.fetch_videos(user_id= sub["id"])
+                    video=videos[0]
 
                     data= {
                         'user_id': sub['id'],
-                        # 'title': video.title,
-                        # 'url': video.url,
+                        'title': video.title,
+                        'url': video.url,
                     }
                     url= f"{os.getenv('BACKEND_URL')}/discord/stop-live"
                     

@@ -261,6 +261,8 @@ class Message(CogCore):
             await asyncio.sleep(55)
             
         
+        
+        
     # 確認 CD
     def check_cooldowns(self, user_name: str, cd: int) -> bool:
         '''

@@ -135,8 +135,8 @@ async def start_live(data: NotifyData, session: Session= Depends(get_session)):
         
 class StopLive(BaseModel):
     user_id: int
-    # title: str
-    # url: str        
+    title: str
+    url: str        
 
 @router.get('/stop-live')
 async def stop_live(data: StopLive, session: Session= Depends(get_session)):
@@ -157,13 +157,13 @@ async def stop_live(data: StopLive, session: Session= Depends(get_session)):
             embed.set_footer(text= '已結束直播...感謝收看')
             
             view= None
-            # if data['title']== embed.title:
-            #     view= discord.ui.View()
-            #     button= discord.ui.Button(
-            #         label= "VOD",
-            #         url= data['url']
-            #     )
-            #     view.add_item(button)
+            if data.title== embed.title:
+                view= discord.ui.View()
+                button= discord.ui.Button(
+                    label= "VOD",
+                    url= data.url
+                )
+                view.add_item(button)
             
             await msg.edit(embed= embed, view= view)
             

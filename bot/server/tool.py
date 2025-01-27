@@ -1,4 +1,5 @@
-import os
+import os, bcrypt
+from cryptography.fernet import Fernet
 
 # 更新 .env 中的值
 def update_env_variable(key, new_value):
@@ -31,3 +32,38 @@ def update_env_variable(key, new_value):
     # 將更新後的內容寫回 .env 檔案
     with open(file_path, "w") as file:
         file.writelines(updated_lines)
+        
+# 生成加密金鑰
+def generate_key():
+    key = Fernet.generate_key()
+    with open("secret.key", "wb") as key_file:
+        key_file.write(key)
+
+# 載入加密金鑰
+def load_key():
+    with open("secret.key", "rb") as key_file:
+        return key_file.read()
+
+# 加密資料
+def encrypt_data(data):
+    key = load_key()
+    fernet = Fernet(key)
+    encrypted = fernet.encrypt(data.encode('utf-8'))
+    return encrypted
+
+# 解密資料
+def decrypt_data(encrypted_data):
+    key = load_key()
+    fernet = Fernet(key)
+    decrypted = fernet.decrypt(encrypted_data).decode('utf-8')
+    return decrypted
+
+# 將密碼加密
+def hash_password(plain_password):
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(plain_password.encode('utf-8'), salt)
+    return hashed
+
+# 驗證密碼
+def verify_password(plain_password, hashed_password):
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password)

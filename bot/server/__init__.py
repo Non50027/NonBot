@@ -52,15 +52,17 @@ def csrf_error_handler(request: Request, exc: CsrfProtectError):
     
 @app.get("/csrf-token")
 def get_csrf(csrf_protect: CsrfProtect = Depends()):
+    # 生成簽名的 CSRF Token
+    csrf_signed_token= csrf_protect.generate_csrf_tokens()
     # 設置 CSRF Token 到 Cookie
     response = JSONResponse(status_code= 200, content={"csrf_token": "cookie"})
-    csrf_protect.set_csrf_cookie(response)
+    csrf_protect.set_csrf_cookie(csrf_signed_token, response)
     return response
 
 @app.post("/submit-form")
 def submit_form(csrf_protect: CsrfProtect = Depends()):
     # 驗證 CSRF Token
-    csrf_protect.validate_csrf_in_cookies(csrf_protect.get_csrf_from_headers())
+    csrf_protect.validate_csrf(csrf_protect.get_csrf_from_headers())
     return {"message": "Form submitted successfully!"}
 
 
