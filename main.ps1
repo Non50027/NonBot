@@ -45,18 +45,18 @@ function stop-BotProcess {
 Start-NewProcess -process_name "Vue3" -command "cd .\\frontend && npm run dev --host --port"
 
 # 啟動 fastAPI+ bot
-Start-NewProcess -process_name "Bot" -command "python .\\bot"
+Start-NewProcess -process_name "Bot" -command "python .\\backend"
 
 
 # 控制界面，讓你能啟動、重啟或停止每個進程
 while ($true) {
     
-    $command = Read-Host "輸入指令 (bot, exit)"
+    $command = Read-Host "輸入指令 (backend, exit)"
     
     switch ($command) {
-        "bot" {
+        "backend" {
             # stop-BotProcess  -bot_command "python .\\bot"
-            Start-NewProcess -process_name "Bot" -command "python .\\bot"
+            Start-NewProcess -process_name "Bot" -command "python .\\backend"
         }
         "exit" {
             break
