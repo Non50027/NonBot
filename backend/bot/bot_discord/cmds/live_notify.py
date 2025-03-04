@@ -36,12 +36,6 @@ class LiveNotify(CogCore):
         )
         await ctx.send(embed= embed)
 
-    @commands.hybrid_command()
-    @commands.is_owner()
-    async def test_command(self, ctx: commands.Context, channel_id: str):
-        channel= self.bot.get_channel(int(channel_id))
-        print(channel)
-        await ctx.send("OK", ephemeral= True)
 
 async def setup(bot):
     await bot.add_cog(LiveNotify(bot))

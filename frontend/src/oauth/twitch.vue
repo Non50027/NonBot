@@ -3,6 +3,7 @@
         <!-- <BButton @click="clickButton">認證</BButton> -->
         <div>這裡還沒有東西</div>
         <BButton @click="clickButton">回首頁</BButton>
+
     </div>
     
 </template>
@@ -27,7 +28,7 @@ const scope= encodeURIComponent("chat:read chat:edit")
 const _clickButton= ()=>{
     // const state= localStorage.getItem('csrfToken');
     // const url= `https://id.twitch.tv/oauth2/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=${state}`
-    const url= `https://id.twitch.tv/oauth2/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}`
+    const url= `https://id.twitch.tv/oauth2/authorize?forec_verify=true&client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}`
     window.location.href= url;
 }
 const clickButton= ()=>{

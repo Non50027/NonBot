@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi import FastAPI, Request, Depends
 from contextlib import asynccontextmanager
 from .models import init_db
-from .routers import api_discord, api_twitch, oauth, api_sounds
+from .routers import api_discord, oauth, api_sounds, api_twitch
 from fastapi_csrf_protect import CsrfProtect
 from fastapi_csrf_protect.exceptions import CsrfProtectError
 from pydantic import BaseModel
@@ -19,13 +19,13 @@ async def lifespan(app: FastAPI):
     await asyncio.sleep(1)
     await api_discord.init_discord_bot()
     await asyncio.sleep(5)
-    await api_twitch.init_twitch_bot()
+    # await api_twitch.init_twitch_bot()
 
     yield  # 等待應用啟動完成
 
     # 關閉時的清理邏輯
     print("關閉應用：進行清理工作...")
-    await api_twitch.close_twitch_bot()
+    # await api_twitch.close_twitch_bot()
     await api_discord.close_discord_bot()
 
 

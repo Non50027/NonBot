@@ -129,5 +129,5 @@ async def re_get_twitch_token():
         dotenv.load_dotenv()
         return JSONResponse(response_data, status_code= status.HTTP_200_OK)
     else:
-        print('twitch token 刷新失敗', response_data['status'], response_data['error'], response_data['message'])
+        print('twitch token 刷新失敗', response_data['status'], response_data)
         return JSONResponse(response_data, status_code= status.HTTP_400_BAD_REQUEST)

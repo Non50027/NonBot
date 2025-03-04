@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 import asyncio, os, discord
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from ..models import (
     get_session,
     LiveNotifyChannel, LiveNotifyChannelOutput,

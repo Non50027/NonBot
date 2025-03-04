@@ -1,4 +1,4 @@
-import json, os
+import orjson, os
 from functools import wraps
 
 class MyDecorators():
@@ -19,8 +19,8 @@ class MyDecorators():
             async def wrapper(self, *args, **kwargs):
                 # read json
                 file_path= os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data' , f'{json_filename}.json')
-                with open(file_path, 'r', encoding='utf8') as file:
-                    json_data= json.load(file)
+                with open(file_path, 'rb') as file:
+                    json_data= orjson.loads(file.read())
                 '''
                 hybrid_command方法無法直接接收 dict 參數
                 也不接收寫入kwargs
@@ -33,8 +33,10 @@ class MyDecorators():
                 
                 if result is None: return
                 # save json
-                with open(file_path, 'w', encoding='utf8') as file:
-                    json.dump(result, file, ensure_ascii=False, indent=4)
+                with open(file_path, 'wb') as file:
+                    file.write(orjson.dumps(result, option= orjson.OPT_INDENT_2))
                     
+                self.json_data= None
+                
             return wrapper
         return inner

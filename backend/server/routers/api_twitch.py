@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from ..models import get_session, Channel, Emoji, ChannelOutput, ChannelOutputWithEmoji
 from sqlmodel import Session, select
 from ..tool import update_env_variable
-from bot import TwitchBot
+from bot import TwitchAdminBot
 
 def check_twitch_token():
     '''檢查 token 並重新獲取'''
@@ -45,9 +45,9 @@ def check_twitch_token():
     else:
         print('刷新 Twitch Token 失敗', response_data['status'], response_data['error'], response_data['message'])
 
-check_twitch_token()
+# check_twitch_token()
 
-bot = TwitchBot(
+bot_admin = TwitchAdminBot(
     token= os.getenv('TWITCH_BOT_TOKEN'),
     secret= os.getenv('TWITCH_BOT_SECRET')
 )
@@ -55,12 +55,12 @@ bot = TwitchBot(
 async def init_twitch_bot():
     # 啟動 Twitch Bot
     loop = asyncio.get_event_loop()
-    task = loop.create_task(bot.start())
+    task = loop.create_task(bot_admin.start())
     return task
 
 async def close_twitch_bot(task):
     # 停止 Twitch Bot
-    await bot.close()
+    await bot_admin.close()
     await task
 
 router= APIRouter()
@@ -68,18 +68,18 @@ router= APIRouter()
 # 取得 twitch Bot 狀態
 @router.get('/state')
 async def get_state():
-    await bot.wait_for_ready()
+    await bot_admin.wait_for_ready()
     data= {
-        'id': bot.user_id,
-        'login': bot.nick,
-        'channels':[channel.name for channel in bot.connected_channels]
+        'id': bot_admin.user_id,
+        'login': bot_admin.nick,
+        'channels':[channel.name for channel in bot_admin.connected_channels]
     }
     
     return data
 
 @router.get("/reload")
 async def reload_cog():
-    bot.reload_cog()
+    bot_admin.reload_cog()
 
 @router.get('/all-sub-channel', response_model= list[ChannelOutput])
 async def get_channel(session: Session = Depends(get_session)):
@@ -97,7 +97,7 @@ async def fetch_channel(id: int, session: Session = Depends(get_session)):
 @router.post('/channel/{name}', response_model= ChannelOutputWithEmoji)
 async def create_channel(name: str, session: Session = Depends(get_session)):
     # 取得使用者資料
-    users= await bot.fetch_users(names= [name])
+    users= await bot_admin.fetch_users(names= [name])
     user= users[0]
     
     # 檢查是否已有資料
@@ -106,7 +106,7 @@ async def create_channel(name: str, session: Session = Depends(get_session)):
     if channel: return channel
     
     # 取得頻道資料
-    ch= await bot.fetch_channel(name)
+    ch= await bot_admin.fetch_channel(name)
     # 取得表符列表
     emojis= await ch.user.fetch_channel_emotes()
     # 表符前綴
@@ -140,7 +140,7 @@ async def create_channel(name: str, session: Session = Depends(get_session)):
 @router.put('/channel/{name}', response_model= ChannelOutput)
 async def update_channel(name: str, session: Session = Depends(get_session)):
     # 取得使用者資料
-    users= await bot.fetch_users(names= [name])
+    users= await bot_admin.fetch_users(names= [name])
     user= users[0]
     # 檢查是否已有資料    
     channel= session.get(Channel, user.id)
@@ -148,7 +148,7 @@ async def update_channel(name: str, session: Session = Depends(get_session)):
     if channel is None: raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail= "沒有資料")
     
     # 取得頻道資料
-    ch= await bot.fetch_channel(name)
+    ch= await bot_admin.fetch_channel(name)
     # 取得表符列表
     emojis= await ch.user.fetch_channel_emotes()    
     # 表符前綴

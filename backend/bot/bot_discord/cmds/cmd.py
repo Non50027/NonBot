@@ -1,6 +1,7 @@
-import tracemalloc, os, discord
+import tracemalloc, os, discord, orjson
 from discord.ext import commands
 from bot_discord.tool import CogCore
+from bot_discord.tool import MyDecorators
 
 class Cmd(CogCore):
         
@@ -49,6 +50,18 @@ class Cmd(CogCore):
         
         await ctx.send(file= icon, embed= embed)
     
+    @commands.hybrid_command()
+    @MyDecorators.readJson('test')
+    async def  test(self, ctx:commands.Context, cmd: str, *, context: str):
+        
+        if not cmd.startswith('!'):
+            await ctx.send("請以`!`開頭")
+            return
+         
+        cmds= self.json_data.setdefault(ctx.channel.name, {})
+        cmds[cmd]= context
+            
+        return self.json_data
     
 # Cog 載入 Bot 中
 async def setup(bot):
